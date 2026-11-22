@@ -43,11 +43,35 @@
       border: 1px solid rgba(201, 162, 99, 0.24);
       box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75);
     }
+    @media (max-width: 639px) {
+      .stat-card-movil {
+        min-width: 0;
+        padding: 0.75rem 0.4rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+      .stat-label-movil {
+        font-size: 9px;
+        letter-spacing: 0.04em;
+        line-height: 1.15;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+      .stat-valor-movil {
+        font-size: 1.35rem;
+        line-height: 1.2;
+        margin-top: 0.25rem;
+      }
+    }
   </style>
 </head>
 <body class="font-sans text-marfilOscuro min-h-screen flex flex-col justify-between antialiased">
 
-  <div class="max-w-4xl mx-auto p-4 sm:p-6 w-full my-6 sm:my-10">
+  <div class="max-w-5xl mx-auto p-4 sm:p-6 w-full my-6 sm:my-10">
 
     <!-- ENCABEZADO -->
     <div class="text-center mb-8">
@@ -63,10 +87,10 @@
 
     <!-- VISTA INVITADO (BUSCADOR + GRUPO) -->
     <div id="vista-invitado" class="hidden panel-negro rounded-3xl p-6 sm:p-10 max-w-2xl mx-auto">
-      <div class="text-center mb-8 pb-6 border-b border-white/10">
+      <div id="encabezado-invitado" class="text-center mb-8 pb-6 border-b border-white/10">
         <h1 class="font-serif text-3xl sm:text-4xl font-bold text-marfilOscuro tracking-tight">Confirmación de Asistencia</h1>
-        <p class="text-ceniza text-sm mt-2 max-w-md mx-auto leading-relaxed">
-          Escribe tu nombre y/o apellido para localizar tu invitación y la de tu grupo.
+        <p id="subtitulo-invitado" class="text-ceniza text-sm mt-2 max-w-md mx-auto leading-relaxed">
+          Escribe tu nombre y/o apellido para localizar tu invitación y la de tu familia.
         </p>
       </div>
 
@@ -84,36 +108,43 @@
             autocomplete="off"
             class="w-full px-4 py-3.5 bg-grafito border border-white/15 rounded-2xl text-marfilOscuro placeholder:text-ceniza/60 focus:outline-none focus:border-oro uppercase font-medium tracking-wide text-sm"
           >
-          <span class="text-[11px] text-ceniza mt-1.5 block">
-            Se busca automáticamente en mayúsculas y sin acentos.
-          </span>
         </div>
 
         <div id="estado-busqueda" class="hidden text-xs text-ceniza py-2"></div>
 
         <!-- LISTA DESPLEGABLE DE COINCIDENCIAS -->
         <div id="resultados-busqueda" class="hidden space-y-2 pt-1"></div>
+
+        <!-- AVISO SI YA ESTÁ CONFIRMADO -->
+        <div id="aviso-ya-confirmado" class="hidden p-5 rounded-2xl bg-emerald-950/75 border border-emerald-400/40 space-y-4">
+          <p class="text-sm text-white font-medium leading-relaxed">
+            Tu asistencia ya figura como <span class="font-bold underline">CONFIRMADO</span>. ¿Quieres cambiar tu estado?
+          </p>
+          <div class="flex gap-3">
+            <button type="button" onclick="confirmarCambioEstado(true)" class="px-5 py-2.5 bg-oro hover:bg-oroClaro text-obsidiana rounded-xl text-xs font-bold transition">
+              Sí, cambiar estado
+            </button>
+            <button type="button" onclick="confirmarCambioEstado(false)" class="px-5 py-2.5 bg-grafito hover:bg-white/10 text-white border border-white/20 rounded-xl text-xs font-semibold transition">
+              No
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- CARGANDO GRUPO -->
       <div id="cargando-grupo" class="hidden text-center py-12 text-ceniza text-sm tracking-wide">
-        Cargando tu grupo...
+        Cargando tu invitación...
       </div>
 
       <!-- SECCIÓN DE CONFIRMACIÓN DEL GRUPO -->
       <div id="seccion-invitados" class="hidden space-y-7">
-        <div class="flex items-center justify-between bg-grafito/90 border border-white/10 rounded-2xl px-4 py-3">
-          <div>
-            <span class="text-[10px] uppercase tracking-widest text-oro block">Grupo Seleccionado</span>
-            <span id="etiqueta-grupo-actual" class="font-mono text-sm font-semibold text-marfilOscuro">-</span>
-          </div>
+        <div id="barra-cambiar-persona" class="flex items-center justify-end">
           <button type="button" onclick="volverABuscar()" class="text-xs font-semibold text-oroClaro hover:text-white underline underline-offset-4 transition">
             Cambiar persona
           </button>
         </div>
 
         <div id="lista-miembros" class="divide-y divide-white/10"></div>
-        <div id="mensaje-alerta" class="hidden p-4 rounded-2xl text-sm font-medium"></div>
 
         <button onclick="enviarRSVP()" id="btn-enviar" class="w-full bg-oro hover:bg-oroClaro text-obsidiana font-bold py-3.5 px-6 rounded-2xl transition duration-200 shadow-lg shadow-black/40 tracking-wide">
           GUARDAR CONFIRMACIÓN
@@ -149,19 +180,19 @@
         </div>
       </div>
 
-      <!-- Estadísticas rápidas -->
-      <div class="grid grid-cols-3 gap-3 sm:gap-5 mb-8">
-        <div class="bg-grafito/90 p-4 sm:p-5 rounded-2xl border border-white/10 text-center">
-          <span class="block text-[11px] font-semibold text-ceniza uppercase tracking-wider">Total Invitados</span>
-          <span id="stat-total" class="font-serif text-2xl sm:text-3xl font-bold text-marfilOscuro mt-1 block">-</span>
+      <!-- Estadísticas rápidas (colores vivos + texto blanco, misma forma y tamaño) -->
+      <div class="grid grid-cols-3 gap-2.5 sm:gap-5 mb-8">
+        <div class="stat-card-movil bg-indigo-600 p-4 sm:p-5 rounded-2xl border border-indigo-400/50 shadow-lg text-center">
+          <span class="stat-label-movil block text-[11px] font-semibold text-white/95 uppercase tracking-wider">Total Invitados</span>
+          <span id="stat-total" class="stat-valor-movil font-serif text-2xl sm:text-3xl font-bold text-white mt-1 block">-</span>
         </div>
-        <div class="bg-emerald-950/50 p-4 sm:p-5 rounded-2xl border border-emerald-500/25 text-center">
-          <span class="block text-[11px] font-semibold text-emerald-300 uppercase tracking-wider">Confirmados</span>
-          <span id="stat-confirmados" class="font-serif text-2xl sm:text-3xl font-bold text-emerald-200 mt-1 block">-</span>
+        <div class="stat-card-movil bg-emerald-600 p-4 sm:p-5 rounded-2xl border border-emerald-400/50 shadow-lg text-center">
+          <span class="stat-label-movil block text-[11px] font-semibold text-white/95 uppercase tracking-wider">Confirmados</span>
+          <span id="stat-confirmados" class="stat-valor-movil font-serif text-2xl sm:text-3xl font-bold text-white mt-1 block">-</span>
         </div>
-        <div class="bg-amber-950/50 p-4 sm:p-5 rounded-2xl border border-amber-500/25 text-center">
-          <span class="block text-[11px] font-semibold text-amber-300 uppercase tracking-wider">Pendientes</span>
-          <span id="stat-pendientes" class="font-serif text-2xl sm:text-3xl font-bold text-amber-200 mt-1 block">-</span>
+        <div class="stat-card-movil bg-amber-600 p-4 sm:p-5 rounded-2xl border border-amber-400/50 shadow-lg text-center">
+          <span class="stat-label-movil block text-[11px] font-semibold text-white/95 uppercase tracking-wider">Pendientes</span>
+          <span id="stat-pendientes" class="stat-valor-movil font-serif text-2xl sm:text-3xl font-bold text-white mt-1 block">-</span>
         </div>
       </div>
 
@@ -221,6 +252,19 @@
       </div>
     </div>
 
+    <!-- POP-UP DE GUARDADO EXITOSO -->
+    <div id="popup-exito" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+      <div class="bg-carbon rounded-3xl p-6 sm:p-8 max-w-sm w-full text-center shadow-2xl border border-emerald-400/40 space-y-4">
+        <div class="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center mx-auto text-xl font-bold">
+          ✓
+        </div>
+        <p id="texto-popup-exito" class="text-base font-semibold text-white leading-relaxed">
+          Tus respuestas han sido guardadas con éxito.
+        </p>
+        <span class="block text-xs text-ceniza">Volviendo al buscador...</span>
+      </div>
+    </div>
+
   </div>
 
   <footer class="text-center py-5 text-xs tracking-wide text-ceniza">
@@ -263,11 +307,24 @@
         await cargarPanelAdmin();
       } else {
         document.getElementById('vista-invitado').classList.remove('hidden');
-        document.getElementById('seccion-buscador').classList.remove('hidden');
+        mostrarVistaBuscador();
       }
     };
 
     let temporizadorBusqueda = null;
+    let grupoPendienteConfirmar = null;
+    let temporizadorPopup = null;
+
+    function mostrarVistaBuscador() {
+      document.getElementById('encabezado-invitado').classList.remove('hidden');
+      document.getElementById('subtitulo-invitado').classList.remove('hidden');
+      document.getElementById('seccion-buscador').classList.remove('hidden');
+      document.getElementById('seccion-invitados').classList.add('hidden');
+      document.getElementById('seccion-error').classList.add('hidden');
+      document.getElementById('cargando-grupo').classList.add('hidden');
+      document.getElementById('aviso-ya-confirmado').classList.add('hidden');
+      grupoPendienteConfirmar = null;
+    }
 
     function manejarBusquedaInvitado(inputEl) {
       const normalizado = normalizarTexto(inputEl.value);
@@ -276,6 +333,9 @@
         inputEl.value = normalizado;
         if (pos !== null) inputEl.setSelectionRange(pos, pos);
       }
+
+      document.getElementById('aviso-ya-confirmado').classList.add('hidden');
+      grupoPendienteConfirmar = null;
 
       clearTimeout(temporizadorBusqueda);
       const consulta = normalizado.trim();
@@ -317,30 +377,49 @@
         return;
       }
 
-      estadoEl.textContent = 'Selecciona tu nombre para ver tu invitación y grupo:';
+      estadoEl.textContent = 'Selecciona tu nombre:';
       resultadosEl.classList.remove('hidden');
 
       coincidencias.forEach(item => {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'w-full text-left px-4 py-3.5 rounded-2xl bg-grafito hover:bg-white/10 border border-white/15 hover:border-oro/50 transition flex items-center justify-between gap-3';
-        btn.onclick = () => seleccionarInvitadoYGrupo(item.grupoId);
+        btn.onclick = () => manejarSeleccionInvitado(item);
 
         btn.innerHTML = `
-          <div>
-            <div class="font-semibold text-sm text-marfilOscuro tracking-wide">${normalizarTexto(item.nombre)}</div>
-            <div class="text-[11px] text-ceniza mt-0.5">${item.tipo === 'Principal' ? 'INVITADO PRINCIPAL' : 'ACOMPAÑANTE'} · GRUPO ${item.grupoId}</div>
-          </div>
+          <div class="font-semibold text-sm text-marfilOscuro tracking-wide">${normalizarTexto(item.nombre)}</div>
           <span class="text-xs font-bold text-oro">Seleccionar →</span>
         `;
         resultadosEl.appendChild(btn);
       });
     }
 
+    async function manejarSeleccionInvitado(item) {
+      if (String(item.estado || '').trim() === 'Confirmado') {
+        grupoPendienteConfirmar = item.grupoId;
+        document.getElementById('aviso-ya-confirmado').classList.remove('hidden');
+        return;
+      }
+      await seleccionarInvitadoYGrupo(item.grupoId);
+    }
+
+    async function confirmarCambioEstado(acepta) {
+      document.getElementById('aviso-ya-confirmado').classList.add('hidden');
+      if (acepta && grupoPendienteConfirmar) {
+        const grupo = grupoPendienteConfirmar;
+        grupoPendienteConfirmar = null;
+        await seleccionarInvitadoYGrupo(grupo);
+      } else {
+        grupoPendienteConfirmar = null;
+        volverABuscar();
+      }
+    }
+
     async function seleccionarInvitadoYGrupo(grupoSeleccionado) {
       document.getElementById('seccion-buscador').classList.add('hidden');
       document.getElementById('seccion-error').classList.add('hidden');
       document.getElementById('seccion-invitados').classList.add('hidden');
+      document.getElementById('subtitulo-invitado').classList.add('hidden');
       document.getElementById('cargando-grupo').classList.remove('hidden');
 
       try {
@@ -348,7 +427,6 @@
         document.getElementById('cargando-grupo').classList.add('hidden');
 
         if (res.success && res.data && res.data.length > 0) {
-          document.getElementById('etiqueta-grupo-actual').textContent = grupoSeleccionado;
           mostrarMiembrosGrupo(res.data);
         } else {
           document.getElementById('seccion-error').classList.remove('hidden');
@@ -360,10 +438,13 @@
     }
 
     function volverABuscar() {
-      document.getElementById('seccion-invitados').classList.add('hidden');
-      document.getElementById('seccion-error').classList.add('hidden');
-      document.getElementById('mensaje-alerta').classList.add('hidden');
-      document.getElementById('seccion-buscador').classList.remove('hidden');
+      if (temporizadorPopup) {
+        clearTimeout(temporizadorPopup);
+        temporizadorPopup = null;
+      }
+      document.getElementById('popup-exito').classList.add('hidden');
+      document.getElementById('popup-exito').classList.remove('flex');
+      mostrarVistaBuscador();
       const input = document.getElementById('input-buscar-invitado');
       input.value = '';
       input.focus();
@@ -375,6 +456,7 @@
 
     function mostrarMiembrosGrupo(miembros) {
       datosMiembros = miembros;
+      document.getElementById('subtitulo-invitado').classList.add('hidden');
       document.getElementById('seccion-invitados').classList.remove('hidden');
       const btn = document.getElementById('btn-enviar');
       btn.disabled = false;
@@ -405,6 +487,18 @@
       mostrarMiembrosGrupo(datosMiembros);
     }
 
+    function mostrarPopupExitoYVolver(mensaje) {
+      const popup = document.getElementById('popup-exito');
+      document.getElementById('texto-popup-exito').textContent = mensaje || "Tus respuestas han sido guardadas con éxito.";
+      popup.classList.remove('hidden');
+      popup.classList.add('flex');
+
+      if (temporizadorPopup) clearTimeout(temporizadorPopup);
+      temporizadorPopup = setTimeout(() => {
+        volverABuscar();
+      }, 2500);
+    }
+
     async function enviarRSVP() {
       let btn = document.getElementById('btn-enviar');
       btn.disabled = true;
@@ -412,12 +506,8 @@
 
       try {
         const res = await apiPost({ action: 'guardarRSVP', respuestas: datosMiembros });
-        let alerta = document.getElementById('mensaje-alerta');
         if (res.success) {
-          alerta.className = "p-4 rounded-2xl text-sm font-medium bg-emerald-950/70 border border-emerald-500/30 text-emerald-200";
-          alerta.innerText = res.message;
-          alerta.classList.remove('hidden');
-          btn.innerText = "¡GUARDADO CON ÉXITO!";
+          mostrarPopupExitoYVolver(res.message || "Tus respuestas han sido guardadas con éxito.");
         } else {
           throw new Error(res.message);
         }
@@ -439,6 +529,14 @@
       }
     }
 
+    function obtenerGruposDisponibles() {
+      const setGrupos = new Set();
+      listaGlobalInvitados.forEach(item => {
+        if (item.grupoId) setGrupos.add(String(item.grupoId).trim());
+      });
+      return Array.from(setGrupos).sort();
+    }
+
     function renderizarTablaAdmin(lista) {
       let tbody = document.getElementById('tabla-admin');
       tbody.innerHTML = '';
@@ -456,27 +554,101 @@
         return;
       }
 
-      lista.forEach(i => {
+      const gruposDisponibles = obtenerGruposDisponibles();
+      const estadosDisponibles = ['Pendiente', 'Confirmado', 'Rechazado'];
+
+      lista.forEach((i, idx) => {
         let tr = document.createElement('tr');
         tr.className = "hover:bg-white/5 transition";
-        let estadoStr = i.estado || 'Pendiente';
-        let badgeColor = estadoStr === 'Confirmado'
-          ? 'bg-emerald-950/70 text-emerald-200 border border-emerald-500/30'
-          : (estadoStr === 'Rechazado'
-            ? 'bg-rose-950/70 text-rose-200 border border-rose-500/30'
-            : 'bg-amber-950/70 text-amber-200 border border-amber-500/30');
+        let estadoActual = i.estado || 'Pendiente';
+        let grupoActual = String(i.grupoId || '').trim();
+
+        const opcionesGrupo = gruposDisponibles.map(g =>
+          `<option value="${g}" ${g === grupoActual ? 'selected' : ''}>${g}</option>`
+        ).join('');
+
+        const opcionesEstado = estadosDisponibles.map(est =>
+          `<option value="${est}" ${est === estadoActual ? 'selected' : ''}>${est}</option>`
+        ).join('');
 
         tr.innerHTML = `
-          <td class="p-3.5 font-medium text-marfilOscuro">${normalizarTexto(i.nombre)}</td>
-          <td class="p-3.5 text-ceniza font-mono text-xs">${i.grupoId}</td>
-          <td class="p-3.5 text-ceniza">${i.tipo}</td>
-          <td class="p-3.5"><span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}">${estadoStr}</span></td>
-          <td class="p-3.5 text-right">
-            <button onclick="eliminarFila('${i.id}', ${i.row})" class="text-rose-300 hover:text-rose-200 text-xs font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-950/50 transition" title="Eliminar invitado">🗑️ Eliminar</button>
+          <td class="p-3">
+            <input
+              type="text"
+              id="edit-nombre-${idx}"
+              value="${normalizarTexto(i.nombre)}"
+              oninput="this.value = normalizarTexto(this.value)"
+              class="w-full min-w-[180px] px-2.5 py-1.5 bg-carbon border border-white/15 rounded-lg text-xs font-medium text-marfilOscuro uppercase focus:outline-none focus:border-oro"
+            >
+          </td>
+          <td class="p-3">
+            <select
+              id="edit-grupo-${idx}"
+              class="px-2.5 py-1.5 bg-carbon border border-white/15 rounded-lg text-xs font-mono text-marfilOscuro focus:outline-none focus:border-oro"
+            >
+              ${opcionesGrupo}
+            </select>
+          </td>
+          <td class="p-3.5 text-ceniza text-xs">${i.tipo}</td>
+          <td class="p-3">
+            <select
+              id="edit-estado-${idx}"
+              class="px-2.5 py-1.5 bg-carbon border border-white/15 rounded-lg text-xs font-semibold text-marfilOscuro focus:outline-none focus:border-oro"
+            >
+              ${opcionesEstado}
+            </select>
+          </td>
+          <td class="p-3 text-right whitespace-nowrap space-x-1.5">
+            <button onclick="guardarEdicionFila(${idx}, '${i.id}', ${i.row}, this)" class="bg-oro/20 hover:bg-oro/35 text-oroClaro border border-oro/40 text-xs font-semibold px-2.5 py-1 rounded-lg transition" title="Guardar cambios">
+              💾 Guardar
+            </button>
+            <button onclick="eliminarFila('${i.id}', ${i.row})" class="text-rose-300 hover:text-rose-200 text-xs font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-950/50 transition" title="Eliminar invitado">
+              🗑️
+            </button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    async function guardarEdicionFila(idx, id, row, btnEl) {
+      const inputNombre = document.getElementById(`edit-nombre-${idx}`);
+      const selectGrupo = document.getElementById(`edit-grupo-${idx}`);
+      const selectEstado = document.getElementById(`edit-estado-${idx}`);
+
+      const nombreLimpio = normalizarTexto(inputNombre.value).trim();
+      if (!nombreLimpio) {
+        alert("El nombre no puede quedar vacío.");
+        return;
+      }
+
+      const textoOriginal = btnEl.innerHTML;
+      btnEl.disabled = true;
+      btnEl.innerHTML = "...";
+
+      try {
+        const res = await apiPost({
+          action: 'editarInvitado',
+          datos: {
+            id: id,
+            row: row,
+            nombre: nombreLimpio,
+            grupoId: selectGrupo.value,
+            estado: selectEstado.value
+          }
+        });
+
+        if (res.success) {
+          await cargarPanelAdmin();
+        } else {
+          alert(res.message || "No se pudieron guardar los cambios.");
+        }
+      } catch (err) {
+        alert("Hubo un error al guardar los cambios.");
+      } finally {
+        btnEl.disabled = false;
+        btnEl.innerHTML = textoOriginal;
+      }
     }
 
     function filtrarTabla() {
@@ -510,11 +682,10 @@
         return;
       }
 
-      const baseUrl = window.location.origin + window.location.pathname;
-      let csvContent = "data:text/csv;charset=utf-8,ID,Nombre,Grupo ID,Tipo,Estado,Enlace General de Confirmacion\r\n";
+      let csvContent = "data:text/csv;charset=utf-8,ID,Nombre,Grupo ID,Tipo,Estado\r\n";
 
       listaGlobalInvitados.forEach(i => {
-        let fila = [i.id, `"${normalizarTexto(i.nombre)}"`, i.grupoId, i.tipo, i.estado || 'Pendiente', `"${baseUrl}"`].join(",");
+        let fila = [i.id, `"${normalizarTexto(i.nombre)}"`, i.grupoId, i.tipo, i.estado || 'Pendiente'].join(",");
         csvContent += fila + "\r\n";
       });
 
