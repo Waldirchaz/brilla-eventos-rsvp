@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Brilla Eventos - RSVP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <div class="max-w-4xl mx-auto p-4 w-full my-8">
+
+    <!-- ENCABEZADO CON LOGO TRASLÚCIDO -->
+    <div class="text-center mb-6">
+      <div class="inline-block p-2 mb-2">
+        <img src="https://lh3.googleusercontent.com/d/1YNLnd3IMU3VrFeXlltuwh5kO4J_V4CAV" alt="Brilla Eventos" class="h-24 mx-auto object-contain drop-shadow-md" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=Brilla+Eventos';">
+      </div>
+      <p class="text-xs font-semibold tracking-widest text-indigo-600 uppercase">Sistema de Confirmación</p>
+    </div>
+
+    <!-- VISTA INVITADO -->
+    <div id="vista-invitado" class="hidden bg-white shadow-xl rounded-2xl p-6 sm:p-8 border border-slate-100 max-w-2xl mx-auto">
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-slate-900">Confirmación de Asistencia</h1>
+        <p class="text-slate-500 text-sm mt-1">Por favor confirma tu asistencia y la de tus acompañantes vinculados.</p>
+      </div>
+
+      <div id="cargando" class="text-center py-10 text-slate-400">Cargando tus datos...</div>
+
+      <div id="seccion-invitados" class="hidden space-y-6">
+        <div id="lista-miembros" class="divide-y divide-slate-100"></div>
+        <div id="mensaje-alerta" class="hidden p-4 rounded-xl text-sm font-medium"></div>
+
+        <button onclick="enviarRSVP()" id="btn-enviar" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 shadow-lg shadow-indigo-100">
+          Guardar Confirmación
+        </button>
+      </div>
+
+      <div id="seccion-error" class="hidden text-center py-8">
+        <div class="bg-rose-50 text-rose-700 p-4 rounded-xl mb-4 text-sm font-medium">
+          No se encontró un grupo válido o el enlace está incompleto.
+        </div>
+      </div>
+    </div>
+
+    <!-- VISTA ANFITRIÓN (ADMIN) -->
+    <div id="vista-admin" class="hidden bg-white shadow-xl rounded-2xl p-6 sm:p-8 border border-slate-100">
+
+      <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900">Panel de Anfitrión</h1>
+          <p class="text-slate-500 text-sm">Control general de confirmaciones y lista de invitados.</p>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <button onclick="exportarCSV()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold py-2.5 px-4 rounded-xl transition flex items-center gap-1.5 border border-slate-200">
+            📥 Exportar CSV con Enlaces
+          </button>
+          <button onclick="abrirModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition shadow-md shadow-indigo-100">
+            + Nuevo Grupo
+          </button>
+        </div>
+      </div>
+
+      <!-- Estadísticas rápidas -->
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-center">
+          <span class="block text-xs font-semibold text-slate-400 uppercase">Total Invitados</span>
+          <span id="stat-total" class="text-xl font-bold text-slate-800">-</span>
+        </div>
+        <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-100 text-center">
+          <span class="block text-xs font-semibold text-emerald-600 uppercase">Confirmados</span>
+          <span id="stat-confirmados" class="text-xl font-bold text-emerald-700">-</span>
+        </div>
+        <div class="bg-amber-50 p-4 rounded-xl border border-amber-100 text-center">
+          <span class="block text-xs font-semibold text-amber-600 uppercase">Pendientes</span>
+          <span id="stat-pendientes" class="text-xl font-bold text-amber-700">-</span>
+        </div>
+      </div>
+
+      <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-4">
+        <div class="w-full sm:w-72">
+          <input type="text" id="input-buscar" placeholder="🔍 Buscar por nombre o grupo..." oninput="filtrarTabla()" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50/50">
+        </div>
+        <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+          <button onclick="filtrarEstado('Todos', this)" class="filtro-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition">Todos</button>
+          <button onclick="filtrarEstado('Confirmado', this)" class="filtro-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Confirmados</button>
+          <button onclick="filtrarEstado('Pendiente', this)" class="filtro-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Pendientes</button>
+          <button onclick="filtrarEstado('Rechazado', this)" class="filtro-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">Rechazados</button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="overflow-x-auto rounded-xl border border-slate-100">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="bg-slate-50 text-slate-400 uppercase text-xs tracking-wider">
+              <th class="p-3 font-semibold">Nombre</th>
+              <th class="p-3 font-semibold">Grupo</th>
+              <th class="p-3 font-semibold">Tipo</th>
+              <th class="p-3 font-semibold">Estado</th>
+              <th class="p-3 font-semibold text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-admin" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal-agregar" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+      <div class="bg-white rounded-2xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Agregar Grupo de Invitados</h3>
+        <form id="form-nuevo" onsubmit="guardarNuevoInvitado(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase mb-1">Grupo ID (Automático)</label>
+            <input type="text" id="nuevo-grupo" readonly data-cargando="true" class="w-full px-3 py-2 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-mono text-sm cursor-not-allowed">
+            <span class="text-[11px] text-slate-400 mt-1 block">Generado en orden consecutivo automáticamente.</span>
+          </div>
+
+          <div id="contenedor-invitados-dinamico" class="space-y-3"></div>
+
+          <button type="button" onclick="agregarCampoInvitado()" class="text-xs text-indigo-600 font-semibold hover:text-indigo-800 flex items-center gap-1 pt-1">
+            + Agregar otro familiar / acompañante vinculado
+          </button>
+
+          <div class="flex justify-end gap-2 pt-4 border-t border-slate-100">
+            <button type="button" onclick="cerrarModal()" class="px-4 py-2 text-slate-500 hover:bg-slate-100 rounded-xl font-medium text-sm">Cancelar</button>
+            <button type="submit" id="btn-guardar-grupo" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium text-sm shadow">Guardar Todo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="text-center py-4 text-xs text-slate-400">Brilla Eventos - Sistema de RSVP Automatizado</footer>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbyX6FzutTP6aRh7rJcOCn7HzTmr-MkqYX52nL7EtUI5MHGm81kJfXxAs18cu4uexDXXDg/exec";
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const modo = urlParams.get('modo') || 'invitado';
+    const grupoId = urlParams.get('grupo') || '';
+
+    async function apiGet(queryParams) {
+      const qs = new URLSearchParams(queryParams).toString();
+      const response = await fetch(`${API_URL}?${qs}`);
+      return await response.json();
+    }
+
+    async function apiPost(bodyObj) {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(bodyObj)
+      });
+      return await response.json();
+    }
+
+    window.onload = async function() {
+      if (modo === 'admin') {
+        document.getElementById('vista-admin').classList.remove('hidden');
+        await cargarPanelAdmin();
+      } else {
+        document.getElementById('vista-invitado').classList.remove('hidden');
+        if (!grupoId) {
+          document.getElementById('cargando').classList.add('hidden');
+          document.getElementById('seccion-error').classList.remove('hidden');
+          return;
+        }
+        const res = await apiGet({ action: 'grupo', grupo: grupoId });
+        if (res.success) {
+          mostrarMiembrosGrupo(res.data);
+        } else {
+          document.getElementById('cargando').classList.add('hidden');
+          document.getElementById('seccion-error').classList.remove('hidden');
+        }
+      }
+    };
+
+    let datosMiembros = [];
+
+    function mostrarMiembrosGrupo(miembros) {
+      document.getElementById('cargando').classList.add('hidden');
+      if (!miembros || miembros.length === 0) {
+        document.getElementById('seccion-error').classList.remove('hidden');
+        return;
+      }
+      datosMiembros = miembros;
+      document.getElementById('seccion-invitados').classList.remove('hidden');
+
+      let contenedor = document.getElementById('lista-miembros');
+      contenedor.innerHTML = '';
+
+      miembros.forEach((m, index) => {
+        let div = document.createElement('div');
+        div.className = "py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3";
+        div.innerHTML = `
+          <div>
+            <h3 class="font-semibold text-slate-800">${m.nombre}</h3>
+            <span class="text-xs text-slate-400">${m.tipo === 'Principal' ? 'Invitado Principal' : 'Acompañante'}</span>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" onclick="cambiarEstado(${index}, 'Confirmado')" class="px-4 py-2 text-xs font-semibold rounded-xl border transition ${m.estado === 'Confirmado' ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">Asistirá</button>
+            <button type="button" onclick="cambiarEstado(${index}, 'Rechazado')" class="px-4 py-2 text-xs font-semibold rounded-xl border transition ${m.estado === 'Rechazado' ? 'bg-rose-600 text-white border-rose-600 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}">No asistirá</button>
+          </div>
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    function cambiarEstado(index, nuevoEstado) {
+      datosMiembros[index].estado = nuevoEstado;
+      mostrarMiembrosGrupo(datosMiembros);
+    }
+
+    async function enviarRSVP() {
+      let btn = document.getElementById('btn-enviar');
+      btn.disabled = true;
+      btn.innerText = "Guardando...";
+
+      try {
+        const res = await apiPost({ action: 'guardarRSVP', respuestas: datosMiembros });
+        let alerta = document.getElementById('mensaje-alerta');
+        if (res.success) {
+          alerta.className = "p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-700";
+          alerta.innerText = res.message;
+          alerta.classList.remove('hidden');
+          btn.innerText = "¡Guardado con éxito!";
+        } else {
+          throw new Error(res.message);
+        }
+      } catch (err) {
+        alert("Hubo un error al guardar.");
+        btn.disabled = false;
+        btn.innerText = "Guardar Confirmación";
+      }
+    }
+
+    let listaGlobalInvitados = [];
+    let estadoFiltroActual = 'Todos';
+
+    async function cargarPanelAdmin() {
+      const res = await apiGet({ action: 'admin' });
+      if (res.success) {
+        listaGlobalInvitados = res.data || [];
+        renderizarTablaAdmin(listaGlobalInvitados);
+      }
+    }
+
+    function renderizarTablaAdmin(lista) {
+      let tbody = document.getElementById('tabla-admin');
+      tbody.innerHTML = '';
+
+      let total = listaGlobalInvitados.length;
+      let confirmados = listaGlobalInvitados.filter(i => i.estado === 'Confirmado').length;
+      let pendientes = listaGlobalInvitados.filter(i => i.estado === 'Pendiente' || !i.estado).length;
+
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-confirmados').innerText = confirmados;
+      document.getElementById('stat-pendientes').innerText = pendientes;
+
+      if (lista.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">No se encontraron invitados.</td></tr>`;
+        return;
+      }
+
+      lista.forEach(i => {
+        let tr = document.createElement('tr');
+        let estadoStr = i.estado || 'Pendiente';
+        let badgeColor = estadoStr === 'Confirmado' ? 'bg-emerald-50 text-emerald-700' : (estadoStr === 'Rechazado' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700');
+
+        tr.innerHTML = `
+          <td class="p-3 font-medium text-slate-800">${i.nombre}</td>
+          <td class="p-3 text-slate-500 font-mono text-xs">${i.grupoId}</td>
+          <td class="p-3 text-slate-500">${i.tipo}</td>
+          <td class="p-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor}">${estadoStr}</span></td>
+          <td class="p-3 text-right">
+            <button onclick="eliminarFila('${i.id}', ${i.row})" class="text-rose-400 hover:text-rose-600 text-xs font-semibold px-2 py-1 rounded transition" title="Eliminar invitado">🗑️ Eliminar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filtrarTabla() {
+      let query = document.getElementById('input-buscar').value.toLowerCase();
+
+      let filtrados = listaGlobalInvitados.filter(i => {
+        let coincideTexto = String(i.nombre).toLowerCase().includes(query) || String(i.grupoId).toLowerCase().includes(query);
+        let coincideEstado = (estadoFiltroActual === 'Todos') || ((i.estado || 'Pendiente') === estadoFiltroActual);
+        return coincideTexto && coincideEstado;
+      });
+
+      renderizarTablaAdmin(filtrados);
+    }
+
+    function filtrarEstado(estado, btnElement) {
+      estadoFiltroActual = estado;
+      document.querySelectorAll('.filtro-btn').forEach(btn => {
+        btn.className = "filtro-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition";
+      });
+      btnElement.className = "filtro-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition";
+      filtrarTabla();
+    }
+
+    function exportarCSV() {
+      if (listaGlobalInvitados.length === 0) {
+        alert("No hay datos para exportar.");
+        return;
+      }
+
+      const baseUrl = window.location.origin + window.location.pathname;
+      let csvContent = "data:text/csv;charset=utf-8,ID,Nombre,Grupo ID,Tipo,Estado,Enlace de Confirmación\r\n";
+
+      listaGlobalInvitados.forEach(i => {
+        let urlPersonalizada = `${baseUrl}?grupo=${encodeURIComponent(i.grupoId)}`;
+        let fila = [i.id, `"${i.nombre}"`, i.grupoId, i.tipo, i.estado || 'Pendiente', `"${urlPersonalizada}"`].join(",");
+        csvContent += fila + "\r\n";
+      });
+
+      let encodedUri = encodeURI(csvContent);
+      let link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "invitaciones_brilla_eventos.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    async function eliminarFila(id, row) {
+      if (confirm("¿Estás seguro de que deseas eliminar este invitado?")) {
+        const res = await apiPost({ action: 'eliminarInvitado', id: id, row: row });
+        if (res.success) {
+          await cargarPanelAdmin();
+        } else {
+          alert(res.message || "No se pudo eliminar.");
+        }
+      }
+    }
+
+    let listaNuevosInvitados = [];
+
+    async function abrirModal() {
+      document.getElementById('modal-agregar').classList.remove('hidden');
+      document.getElementById('modal-agregar').classList.add('flex');
+
+      let inputGrupo = document.getElementById('nuevo-grupo');
+      inputGrupo.value = "Cargando grupo...";
+      inputGrupo.setAttribute('data-cargando', 'true');
+
+      listaNuevosInvitados = [];
+      agregarCampoInvitado('Principal');
+
+      const res = await apiGet({ action: 'siguienteGrupo' });
+      if (res.success && res.grupoId) {
+        inputGrupo.value = res.grupoId;
+        inputGrupo.removeAttribute('data-cargando');
+      }
+    }
+
+    function cerrarModal() {
+      document.getElementById('modal-agregar').classList.add('hidden');
+      document.getElementById('modal-agregar').classList.remove('flex');
+    }
+
+    function agregarCampoInvitado(tipoForzado) {
+      let tipo = tipoForzado || (listaNuevosInvitados.length === 0 ? 'Principal' : 'Vinculado');
+      listaNuevosInvitados.push({ nombre: '', tipo: tipo });
+      renderizarCamposInvitados();
+    }
+
+    function eliminarCampoInvitado(index) {
+      if (listaNuevosInvitados.length === 1) {
+        alert("Debe haber al menos un invitado en el grupo.");
+        return;
+      }
+      listaNuevosInvitados.splice(index, 1);
+      if (listaNuevosInvitados.length > 0) {
+        listaNuevosInvitados[0].tipo = 'Principal';
+      }
+      renderizarCamposInvitados();
+    }
+
+    function renderizarCamposInvitados() {
+      let contenedor = document.getElementById('contenedor-invitados-dinamico');
+      contenedor.innerHTML = '';
+
+      listaNuevosInvitados.forEach((inv, index) => {
+        let div = document.createElement('div');
+        div.className = "p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2 relative";
+
+        let headerHTML = '<div class="flex justify-between items-center"><span class="text-xs font-bold uppercase text-slate-500">' +
+                         (index === 0 ? 'Invitado Principal' : 'Acompañante Vinculado') + '</span>';
+
+        if (index > 0) {
+          headerHTML += '<button type="button" onclick="eliminarCampoInvitado(' + index + ')" class="text-rose-500 hover:text-rose-700 text-xs font-semibold">Eliminar</button>';
+        }
+        headerHTML += '</div>';
+
+        let inputHTML = '<div><input type="text" placeholder="Nombre completo" value="' + inv.nombre + '" oninput="listaNuevosInvitados[' + index + '].nombre = this.value" required class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"></div>';
+
+        div.innerHTML = headerHTML + inputHTML;
+        contenedor.appendChild(div);
+      });
+    }
+
+    async function guardarNuevoInvitado(e) {
+      e.preventDefault();
+
+      let inputGrupo = document.getElementById('nuevo-grupo');
+      if (inputGrupo.hasAttribute('data-cargando')) {
+        alert("Espera un momento a que se cargue el código del grupo.");
+        return;
+      }
+
+      for (let inv of listaNuevosInvitados) {
+        if (!inv.nombre.trim()) {
+          alert("Por favor completa los nombres de todos los invitados.");
+          return;
+        }
+      }
+
+      let btnGuardar = document.getElementById('btn-guardar-grupo');
+      btnGuardar.disabled = true;
+      btnGuardar.innerText = "Guardando...";
+
+      let datos = {
+        grupoId: inputGrupo.value,
+        invitados: listaNuevosInvitados
+      };
+
+      try {
+        const res = await apiPost({ action: 'agregarInvitado', datos: datos });
+        if (res.success) {
+          cerrarModal();
+          await cargarPanelAdmin();
+        } else {
+          throw new Error(res.message);
+        }
+      } catch (err) {
+        alert("Hubo un error al guardar.");
+      } finally {
+        btnGuardar.disabled = false;
+        btnGuardar.innerText = "Guardar Todo";
+      }
+    }
+  </script>
+</body>
+</html>
