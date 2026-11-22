@@ -47,19 +47,30 @@
       white-space: nowrap;
       font-size: clamp(0.55rem, 2.3vw, 0.72rem);
       line-height: 1.2;
-      max-width: 100%;
+      width: 100%;
       text-align: center;
-      margin-left: auto;
-      margin-right: auto;
+      display: block;
     }
     .stat-valor-linea {
       white-space: nowrap;
       font-size: clamp(1.1rem, 4.5vw, 1.875rem);
       line-height: 1.2;
       margin-top: 0.25rem;
+      width: 100%;
       text-align: center;
-      margin-left: auto;
-      margin-right: auto;
+      display: block;
+    }
+    @media (max-width: 639px) {
+      .stat-card-celular {
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+      }
+      .pildora-contacto {
+        padding: 5px 9px !important;
+        font-size: 0.65rem !important;
+        border-radius: 9px !important;
+      }
     }
     .btn-iphone-cristal {
       background-color: transparent;
@@ -226,17 +237,17 @@
 
       <!-- Estadísticas rápidas -->
       <div class="grid grid-cols-3 gap-2.5 sm:gap-5 mb-8">
-        <div class="min-w-0 bg-white p-4 sm:p-5 rounded-2xl border border-white shadow-lg flex flex-col items-center justify-center text-center">
-          <span class="stat-label-linea block font-semibold text-black uppercase tracking-wider w-full text-center">Total Invitados</span>
-          <span id="stat-total" class="stat-valor-linea font-serif font-bold text-black block w-full text-center">-</span>
+        <div class="stat-card-celular min-w-0 bg-white p-4 sm:p-5 rounded-2xl border border-white shadow-lg flex flex-col items-center justify-center text-center">
+          <span class="stat-label-linea font-semibold text-black uppercase tracking-wider">Total Invitados</span>
+          <span id="stat-total" class="stat-valor-linea font-serif font-bold text-black">-</span>
         </div>
-        <div class="min-w-0 bg-emerald-600 p-4 sm:p-5 rounded-2xl border border-emerald-400/50 shadow-lg flex flex-col items-center justify-center text-center">
-          <span class="stat-label-linea block font-semibold text-white/95 uppercase tracking-wider w-full text-center">Confirmados</span>
-          <span id="stat-confirmados" class="stat-valor-linea font-serif font-bold text-white block w-full text-center">-</span>
+        <div class="stat-card-celular min-w-0 bg-emerald-600 p-4 sm:p-5 rounded-2xl border border-emerald-400/50 shadow-lg flex flex-col items-center justify-center text-center">
+          <span class="stat-label-linea font-semibold text-white/95 uppercase tracking-wider">Confirmados</span>
+          <span id="stat-confirmados" class="stat-valor-linea font-serif font-bold text-white">-</span>
         </div>
-        <div class="min-w-0 bg-yellow-400 p-4 sm:p-5 rounded-2xl border border-yellow-300 shadow-lg flex flex-col items-center justify-center text-center">
-          <span class="stat-label-linea block font-semibold text-black uppercase tracking-wider w-full text-center">Pendientes</span>
-          <span id="stat-pendientes" class="stat-valor-linea font-serif font-bold text-black block w-full text-center">-</span>
+        <div class="stat-card-celular min-w-0 bg-yellow-400 p-4 sm:p-5 rounded-2xl border border-yellow-300 shadow-lg flex flex-col items-center justify-center text-center">
+          <span class="stat-label-linea font-semibold text-black uppercase tracking-wider">Pendientes</span>
+          <span id="stat-pendientes" class="stat-valor-linea font-serif font-bold text-black">-</span>
         </div>
       </div>
 
@@ -279,16 +290,16 @@
           <div>
             <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Tipo de asignación</label>
             <select id="modo-asignacion-grupo" onchange="cambiarModoAsignacionGrupo()" class="w-full px-3.5 py-2.5 bg-grafito border border-white/15 rounded-xl text-marfilOscuro text-sm focus:outline-none focus:border-oro">
-              <option value="nuevo" selected>Nuevo grupo automático</option>
-              <option value="existente">Agregar a grupo existente</option>
+              <option value="nuevo" selected>Agregar nuevos invitados</option>
+              <option value="existente">Agregar a invitado existente</option>
             </select>
           </div>
 
-          <div>
-            <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Grupo ID</label>
-            <input type="text" id="nuevo-grupo" readonly data-cargando="true" class="w-full px-3.5 py-2.5 bg-grafito border border-white/10 rounded-xl text-ceniza font-mono text-sm cursor-not-allowed">
-            <select id="select-grupo-existente" onchange="sincronizarGrupoExistente()" class="hidden w-full px-3.5 py-2.5 bg-grafito border border-white/15 rounded-xl text-marfilOscuro font-mono text-sm focus:outline-none focus:border-oro"></select>
-            <span id="ayuda-grupo-modal" class="text-[11px] text-ceniza/70 mt-1 block">Generado en orden consecutivo automáticamente.</span>
+          <input type="hidden" id="nuevo-grupo" data-cargando="true">
+
+          <div id="contenedor-familiar-existente" class="hidden">
+            <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Familiar</label>
+            <select id="select-grupo-existente" onchange="sincronizarGrupoExistente()" class="w-full px-3.5 py-2.5 bg-grafito border border-white/15 rounded-xl text-marfilOscuro text-sm uppercase focus:outline-none focus:border-oro"></select>
           </div>
 
           <div id="contenedor-invitados-dinamico" class="space-y-3"></div>
@@ -830,14 +841,12 @@
       modoSelect.value = 'nuevo';
 
       const inputGrupo = document.getElementById('nuevo-grupo');
-      const selectExistente = document.getElementById('select-grupo-existente');
-      inputGrupo.classList.remove('hidden');
-      selectExistente.classList.add('hidden');
-      inputGrupo.value = "Cargando grupo...";
+      const contenedorFamiliar = document.getElementById('contenedor-familiar-existente');
+      contenedorFamiliar.classList.add('hidden');
+      inputGrupo.value = '';
       inputGrupo.setAttribute('data-cargando', 'true');
-      document.getElementById('ayuda-grupo-modal').textContent = "Generado en orden consecutivo automáticamente.";
 
-      poblarSelectGruposExistentes();
+      poblarSelectFamiliaresPrincipales();
 
       listaNuevosInvitados = [];
       agregarCampoInvitado('Principal');
@@ -852,55 +861,61 @@
       }
     }
 
-    function poblarSelectGruposExistentes() {
+    function poblarSelectFamiliaresPrincipales() {
       const selectExistente = document.getElementById('select-grupo-existente');
-      const gruposUnicos = Array.from(new Set(
-        listaGlobalInvitados
-          .map(i => String(i.grupoId || '').trim())
-          .filter(Boolean)
-      )).sort((a, b) => {
-        const numA = parseInt(a.replace('GRP-', ''), 10);
-        const numB = parseInt(b.replace('GRP-', ''), 10);
-        if (!isNaN(numA) && !isNaN(numB) && numA !== numB) return numA - numB;
-        return a.localeCompare(b);
-      });
+      const principales = listaGlobalInvitados.filter(item =>
+        String(item.tipo || '').trim().toLowerCase() === 'principal' &&
+        String(item.nombre || '').trim() !== '' &&
+        String(item.grupoId || '').trim() !== ''
+      );
 
-      if (!gruposUnicos.length) {
-        selectExistente.innerHTML = `<option value="">Sin grupos existentes</option>`;
+      const candidatos = principales.length > 0
+        ? principales
+        : listaGlobalInvitados.filter(item =>
+            String(item.nombre || '').trim() !== '' &&
+            String(item.grupoId || '').trim() !== ''
+          );
+
+      if (!candidatos.length) {
+        selectExistente.innerHTML = `<option value="">Sin familiares registrados</option>`;
         return;
       }
 
-      selectExistente.innerHTML = gruposUnicos.map(g => {
-        const miembros = listaGlobalInvitados.filter(item => String(item.grupoId || '').trim() === g);
-        const nombres = miembros.map(m => normalizarTexto(m.nombre)).join(', ');
-        return `<option value="${g}">${g} (${nombres})</option>`;
-      }).join('');
+      selectExistente.innerHTML = candidatos.map(item =>
+        `<option value="${String(item.grupoId).trim()}">${normalizarTexto(item.nombre)}</option>`
+      ).join('');
     }
 
     function cambiarModoAsignacionGrupo() {
       const modoAsignacion = document.getElementById('modo-asignacion-grupo').value;
       const inputGrupo = document.getElementById('nuevo-grupo');
+      const contenedorFamiliar = document.getElementById('contenedor-familiar-existente');
       const selectExistente = document.getElementById('select-grupo-existente');
-      const ayuda = document.getElementById('ayuda-grupo-modal');
 
       if (modoAsignacion === 'existente') {
-        inputGrupo.classList.add('hidden');
-        selectExistente.classList.remove('hidden');
-        poblarSelectGruposExistentes();
+        contenedorFamiliar.classList.remove('hidden');
+        poblarSelectFamiliaresPrincipales();
         if (selectExistente.value) {
           inputGrupo.value = selectExistente.value;
           inputGrupo.removeAttribute('data-cargando');
         }
-        ayuda.textContent = "El invitado se añadirá y quedará vinculado permanentemente a este grupo.";
+        listaNuevosInvitados = listaNuevosInvitados.map(inv => ({
+          nombre: inv.nombre,
+          tipo: 'Vinculado'
+        }));
       } else {
-        selectExistente.classList.add('hidden');
-        inputGrupo.classList.remove('hidden');
+        contenedorFamiliar.classList.add('hidden');
         if (siguienteGrupoAutomatico) {
           inputGrupo.value = siguienteGrupoAutomatico;
           inputGrupo.removeAttribute('data-cargando');
         }
-        ayuda.textContent = "Generado en orden consecutivo automáticamente.";
+        listaNuevosInvitados = listaNuevosInvitados.map((inv, idx) => ({
+          nombre: inv.nombre,
+          tipo: idx === 0 ? 'Principal' : 'Vinculado'
+        }));
       }
+
+      renderizarCamposInvitados();
     }
 
     function sincronizarGrupoExistente() {
@@ -922,13 +937,16 @@
         ? document.getElementById('modo-asignacion-grupo').value
         : 'nuevo';
       let tipo = tipoForzado || (modoAsignacion === 'existente' ? 'Vinculado' : (listaNuevosInvitados.length === 0 ? 'Principal' : 'Vinculado'));
+      if (modoAsignacion === 'existente') {
+        tipo = 'Vinculado';
+      }
       listaNuevosInvitados.push({ nombre: '', tipo: tipo });
       renderizarCamposInvitados();
     }
 
     function eliminarCampoInvitado(index) {
       if (listaNuevosInvitados.length === 1) {
-        alert("Debe haber al menos un invitado en el grupo.");
+        alert("Debe haber al menos un invitado en el formulario.");
         return;
       }
       listaNuevosInvitados.splice(index, 1);
@@ -945,12 +963,17 @@
       let contenedor = document.getElementById('contenedor-invitados-dinamico');
       contenedor.innerHTML = '';
 
+      const modoAsignacion = document.getElementById('modo-asignacion-grupo')
+        ? document.getElementById('modo-asignacion-grupo').value
+        : 'nuevo';
+
       listaNuevosInvitados.forEach((inv, index) => {
+        const esPrincipal = (modoAsignacion === 'nuevo' && index === 0);
         let div = document.createElement('div');
         div.className = "p-3.5 bg-grafito/90 rounded-2xl border border-white/10 space-y-2";
 
         let headerHTML = '<div class="flex justify-between items-center"><span class="text-[11px] font-bold uppercase tracking-wider text-oro">' +
-                         (inv.tipo === 'Principal' ? 'Invitado Principal' : 'Acompañante Vinculado') + '</span>';
+                         (esPrincipal ? 'Invitado Principal' : 'Acompañante Vinculado') + '</span>';
 
         if (index > 0) {
           headerHTML += '<button type="button" onclick="eliminarCampoInvitado(' + index + ')" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Eliminar</button>';
@@ -969,12 +992,17 @@
 
       let inputGrupo = document.getElementById('nuevo-grupo');
       if (inputGrupo.hasAttribute('data-cargando')) {
-        alert("Espera un momento a que se cargue el código del grupo.");
+        alert("Espera un momento a que se cargue el grupo.");
         return;
       }
 
-      for (let inv of listaNuevosInvitados) {
-        inv.nombre = normalizarTexto(inv.nombre).trim();
+      const modoAsignacion = document.getElementById('modo-asignacion-grupo').value;
+      const invitadosAEnviar = listaNuevosInvitados.map((inv, idx) => ({
+        nombre: normalizarTexto(inv.nombre).trim(),
+        tipo: (modoAsignacion === 'existente') ? 'Vinculado' : (idx === 0 ? 'Principal' : 'Vinculado')
+      }));
+
+      for (let inv of invitadosAEnviar) {
         if (!inv.nombre) {
           alert("Por favor completa los nombres de todos los invitados.");
           return;
@@ -987,7 +1015,7 @@
 
       let datos = {
         grupoId: inputGrupo.value,
-        invitados: listaNuevosInvitados
+        invitados: invitadosAEnviar
       };
 
       try {
