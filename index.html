@@ -48,12 +48,18 @@
       font-size: clamp(0.55rem, 2.3vw, 0.72rem);
       line-height: 1.2;
       max-width: 100%;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
     }
     .stat-valor-linea {
       white-space: nowrap;
       font-size: clamp(1.1rem, 4.5vw, 1.875rem);
       line-height: 1.2;
       margin-top: 0.25rem;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
     }
     .btn-iphone-cristal {
       background-color: transparent;
@@ -64,11 +70,52 @@
     .btn-iphone-cristal:hover {
       background-color: rgba(255, 255, 255, 0.12);
     }
+    .pildora-contacto {
+      background-color: rgba(24, 24, 28, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: clamp(0.68rem, 1.8vw, 0.8rem);
+      font-weight: 500;
+      line-height: 1.25;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .pildora-contacto:hover {
+      background-color: rgba(36, 36, 42, 0.96);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
   </style>
 </head>
 <body class="font-sans text-marfilOscuro min-h-screen flex flex-col justify-between antialiased">
 
-  <div class="max-w-5xl mx-auto p-4 sm:p-6 w-full my-6 sm:my-10">
+  <div class="max-w-5xl mx-auto p-4 sm:p-6 w-full my-4 sm:my-8">
+
+    <!-- BOTONES SUPERIORES DE CONTACTO -->
+    <div class="text-center mb-5">
+      <p class="text-[11px] sm:text-xs font-medium text-ceniza mb-2">¡Síguenos y contáctanos!</p>
+      <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+        <a
+          href="https://www.tiktok.com/@brilla.eventos.cdmx"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pildora-contacto text-sky-400"
+        >
+          TikTok: @brilla.eventos.cdmx
+        </a>
+        <a
+          href="https://wa.me/5215575475462"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="pildora-contacto text-emerald-400"
+        >
+          WhatsApp: 55 7547 5462
+        </a>
+      </div>
+    </div>
 
     <!-- ENCABEZADO -->
     <div class="text-center mb-8">
@@ -172,24 +219,24 @@
             📥 Exportar CSV
           </button>
           <button onclick="abrirModal()" class="bg-oro hover:bg-oroClaro text-obsidiana text-sm font-bold py-2.5 px-4 rounded-xl transition shadow-md shadow-black/40">
-            + Nuevo Grupo
+            Añadir Invitados
           </button>
         </div>
       </div>
 
       <!-- Estadísticas rápidas -->
       <div class="grid grid-cols-3 gap-2.5 sm:gap-5 mb-8">
-        <div class="min-w-0 bg-white p-4 sm:p-5 rounded-2xl border border-white shadow-lg text-center flex flex-col items-center justify-center">
-          <span class="stat-label-linea block font-semibold text-black uppercase tracking-wider">Total Invitados</span>
-          <span id="stat-total" class="stat-valor-linea font-serif font-bold text-black block">-</span>
+        <div class="min-w-0 bg-white p-4 sm:p-5 rounded-2xl border border-white shadow-lg flex flex-col items-center justify-center text-center">
+          <span class="stat-label-linea block font-semibold text-black uppercase tracking-wider w-full text-center">Total Invitados</span>
+          <span id="stat-total" class="stat-valor-linea font-serif font-bold text-black block w-full text-center">-</span>
         </div>
-        <div class="min-w-0 bg-emerald-600 p-4 sm:p-5 rounded-2xl border border-emerald-400/50 shadow-lg text-center flex flex-col items-center justify-center">
-          <span class="stat-label-linea block font-semibold text-white/95 uppercase tracking-wider">Confirmados</span>
-          <span id="stat-confirmados" class="stat-valor-linea font-serif font-bold text-white block">-</span>
+        <div class="min-w-0 bg-emerald-600 p-4 sm:p-5 rounded-2xl border border-emerald-400/50 shadow-lg flex flex-col items-center justify-center text-center">
+          <span class="stat-label-linea block font-semibold text-white/95 uppercase tracking-wider w-full text-center">Confirmados</span>
+          <span id="stat-confirmados" class="stat-valor-linea font-serif font-bold text-white block w-full text-center">-</span>
         </div>
-        <div class="min-w-0 bg-yellow-400 p-4 sm:p-5 rounded-2xl border border-yellow-300 shadow-lg text-center flex flex-col items-center justify-center">
-          <span class="stat-label-linea block font-semibold text-black uppercase tracking-wider">Pendientes</span>
-          <span id="stat-pendientes" class="stat-valor-linea font-serif font-bold text-black block">-</span>
+        <div class="min-w-0 bg-yellow-400 p-4 sm:p-5 rounded-2xl border border-yellow-300 shadow-lg flex flex-col items-center justify-center text-center">
+          <span class="stat-label-linea block font-semibold text-black uppercase tracking-wider w-full text-center">Pendientes</span>
+          <span id="stat-pendientes" class="stat-valor-linea font-serif font-bold text-black block w-full text-center">-</span>
         </div>
       </div>
 
@@ -227,12 +274,21 @@
     <div id="modal-agregar" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
       <div class="bg-carbon rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl border border-oro/30 max-h-[90vh] overflow-y-auto">
         <span class="text-[10px] font-semibold uppercase tracking-[0.22em] text-oro">Registro</span>
-        <h3 class="font-serif text-2xl font-bold text-marfilOscuro mb-5">Agregar Grupo de Invitados</h3>
+        <h3 class="font-serif text-2xl font-bold text-marfilOscuro mb-5">Añadir Invitados</h3>
         <form id="form-nuevo" onsubmit="guardarNuevoInvitado(event)" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Grupo ID (Automático)</label>
+            <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Tipo de asignación</label>
+            <select id="modo-asignacion-grupo" onchange="cambiarModoAsignacionGrupo()" class="w-full px-3.5 py-2.5 bg-grafito border border-white/15 rounded-xl text-marfilOscuro text-sm focus:outline-none focus:border-oro">
+              <option value="nuevo" selected>Nuevo grupo automático</option>
+              <option value="existente">Agregar a grupo existente</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Grupo ID</label>
             <input type="text" id="nuevo-grupo" readonly data-cargando="true" class="w-full px-3.5 py-2.5 bg-grafito border border-white/10 rounded-xl text-ceniza font-mono text-sm cursor-not-allowed">
-            <span class="text-[11px] text-ceniza/70 mt-1 block">Generado en orden consecutivo automáticamente.</span>
+            <select id="select-grupo-existente" onchange="sincronizarGrupoExistente()" class="hidden w-full px-3.5 py-2.5 bg-grafito border border-white/15 rounded-xl text-marfilOscuro font-mono text-sm focus:outline-none focus:border-oro"></select>
+            <span id="ayuda-grupo-modal" class="text-[11px] text-ceniza/70 mt-1 block">Generado en orden consecutivo automáticamente.</span>
           </div>
 
           <div id="contenedor-invitados-dinamico" class="space-y-3"></div>
@@ -264,6 +320,18 @@
 
   </div>
 
+  <!-- BOTÓN FLOTANTE SUBIR RÁPIDO -->
+  <button
+    type="button"
+    id="btn-subir-rapido"
+    onclick="subirRapido()"
+    aria-label="Subir rápido"
+    title="Subir rápido"
+    class="hidden fixed bottom-5 right-5 z-40 w-11 h-11 rounded-full bg-grafito/95 hover:bg-oro text-oro hover:text-obsidiana border border-oro/50 shadow-xl flex items-center justify-center text-base font-bold transition duration-200"
+  >
+    ↑
+  </button>
+
   <footer class="text-center py-5 text-xs tracking-wide text-ceniza">
     Brilla Eventos · Sistema de RSVP Automatizado
   </footer>
@@ -279,6 +347,20 @@
         .toUpperCase()
         .replace(/\s+/g, ' ');
     }
+
+    function subirRapido() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    window.addEventListener('scroll', function() {
+      const btnSubir = document.getElementById('btn-subir-rapido');
+      if (!btnSubir) return;
+      if (window.scrollY > 240) {
+        btnSubir.classList.remove('hidden');
+      } else {
+        btnSubir.classList.add('hidden');
+      }
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     const modo = urlParams.get('modo') || 'invitado';
@@ -738,21 +820,94 @@
     }
 
     let listaNuevosInvitados = [];
+    let siguienteGrupoAutomatico = '';
 
     async function abrirModal() {
       document.getElementById('modal-agregar').classList.remove('hidden');
       document.getElementById('modal-agregar').classList.add('flex');
 
-      let inputGrupo = document.getElementById('nuevo-grupo');
+      const modoSelect = document.getElementById('modo-asignacion-grupo');
+      modoSelect.value = 'nuevo';
+
+      const inputGrupo = document.getElementById('nuevo-grupo');
+      const selectExistente = document.getElementById('select-grupo-existente');
+      inputGrupo.classList.remove('hidden');
+      selectExistente.classList.add('hidden');
       inputGrupo.value = "Cargando grupo...";
       inputGrupo.setAttribute('data-cargando', 'true');
+      document.getElementById('ayuda-grupo-modal').textContent = "Generado en orden consecutivo automáticamente.";
+
+      poblarSelectGruposExistentes();
 
       listaNuevosInvitados = [];
       agregarCampoInvitado('Principal');
 
       const res = await apiGet({ action: 'siguienteGrupo' });
       if (res.success && res.grupoId) {
-        inputGrupo.value = res.grupoId;
+        siguienteGrupoAutomatico = res.grupoId;
+        if (modoSelect.value === 'nuevo') {
+          inputGrupo.value = res.grupoId;
+        }
+        inputGrupo.removeAttribute('data-cargando');
+      }
+    }
+
+    function poblarSelectGruposExistentes() {
+      const selectExistente = document.getElementById('select-grupo-existente');
+      const gruposUnicos = Array.from(new Set(
+        listaGlobalInvitados
+          .map(i => String(i.grupoId || '').trim())
+          .filter(Boolean)
+      )).sort((a, b) => {
+        const numA = parseInt(a.replace('GRP-', ''), 10);
+        const numB = parseInt(b.replace('GRP-', ''), 10);
+        if (!isNaN(numA) && !isNaN(numB) && numA !== numB) return numA - numB;
+        return a.localeCompare(b);
+      });
+
+      if (!gruposUnicos.length) {
+        selectExistente.innerHTML = `<option value="">Sin grupos existentes</option>`;
+        return;
+      }
+
+      selectExistente.innerHTML = gruposUnicos.map(g => {
+        const miembros = listaGlobalInvitados.filter(item => String(item.grupoId || '').trim() === g);
+        const nombres = miembros.map(m => normalizarTexto(m.nombre)).join(', ');
+        return `<option value="${g}">${g} (${nombres})</option>`;
+      }).join('');
+    }
+
+    function cambiarModoAsignacionGrupo() {
+      const modoAsignacion = document.getElementById('modo-asignacion-grupo').value;
+      const inputGrupo = document.getElementById('nuevo-grupo');
+      const selectExistente = document.getElementById('select-grupo-existente');
+      const ayuda = document.getElementById('ayuda-grupo-modal');
+
+      if (modoAsignacion === 'existente') {
+        inputGrupo.classList.add('hidden');
+        selectExistente.classList.remove('hidden');
+        poblarSelectGruposExistentes();
+        if (selectExistente.value) {
+          inputGrupo.value = selectExistente.value;
+          inputGrupo.removeAttribute('data-cargando');
+        }
+        ayuda.textContent = "El invitado se añadirá y quedará vinculado permanentemente a este grupo.";
+      } else {
+        selectExistente.classList.add('hidden');
+        inputGrupo.classList.remove('hidden');
+        if (siguienteGrupoAutomatico) {
+          inputGrupo.value = siguienteGrupoAutomatico;
+          inputGrupo.removeAttribute('data-cargando');
+        }
+        ayuda.textContent = "Generado en orden consecutivo automáticamente.";
+      }
+    }
+
+    function sincronizarGrupoExistente() {
+      const selectExistente = document.getElementById('select-grupo-existente');
+      const inputGrupo = document.getElementById('nuevo-grupo');
+      if (selectExistente.value) {
+        inputGrupo.value = selectExistente.value;
         inputGrupo.removeAttribute('data-cargando');
       }
     }
@@ -763,7 +918,10 @@
     }
 
     function agregarCampoInvitado(tipoForzado) {
-      let tipo = tipoForzado || (listaNuevosInvitados.length === 0 ? 'Principal' : 'Vinculado');
+      const modoAsignacion = document.getElementById('modo-asignacion-grupo')
+        ? document.getElementById('modo-asignacion-grupo').value
+        : 'nuevo';
+      let tipo = tipoForzado || (modoAsignacion === 'existente' ? 'Vinculado' : (listaNuevosInvitados.length === 0 ? 'Principal' : 'Vinculado'));
       listaNuevosInvitados.push({ nombre: '', tipo: tipo });
       renderizarCamposInvitados();
     }
@@ -774,7 +932,10 @@
         return;
       }
       listaNuevosInvitados.splice(index, 1);
-      if (listaNuevosInvitados.length > 0) {
+      const modoAsignacion = document.getElementById('modo-asignacion-grupo')
+        ? document.getElementById('modo-asignacion-grupo').value
+        : 'nuevo';
+      if (listaNuevosInvitados.length > 0 && modoAsignacion !== 'existente') {
         listaNuevosInvitados[0].tipo = 'Principal';
       }
       renderizarCamposInvitados();
@@ -789,7 +950,7 @@
         div.className = "p-3.5 bg-grafito/90 rounded-2xl border border-white/10 space-y-2";
 
         let headerHTML = '<div class="flex justify-between items-center"><span class="text-[11px] font-bold uppercase tracking-wider text-oro">' +
-                         (index === 0 ? 'Invitado Principal' : 'Acompañante Vinculado') + '</span>';
+                         (inv.tipo === 'Principal' ? 'Invitado Principal' : 'Acompañante Vinculado') + '</span>';
 
         if (index > 0) {
           headerHTML += '<button type="button" onclick="eliminarCampoInvitado(' + index + ')" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Eliminar</button>';
