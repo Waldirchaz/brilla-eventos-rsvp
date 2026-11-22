@@ -153,7 +153,7 @@
     <!-- VISTA INVITADO (BUSCADOR + GRUPO) -->
     <div id="vista-invitado" class="hidden panel-negro rounded-3xl p-6 sm:p-10 max-w-2xl mx-auto">
       <div id="encabezado-invitado" class="text-center mb-8 pb-6 border-b border-white/10">
-        <h1 class="font-serif text-3xl sm:text-4xl font-bold text-marfilOscuro tracking-tight">Confirmación de Asistencia DB_RSVP</h1>
+        <h1 id="titulo-invitado" class="font-serif text-3xl sm:text-4xl font-bold text-marfilOscuro tracking-tight">Confirmación de Asistencia DB_RSVP</h1>
         <p id="subtitulo-invitado" class="text-ceniza text-sm mt-2 max-w-md mx-auto leading-relaxed">
           Escribe tu nombre y/o apellido para localizar tu invitación y la de tu familia.
         </p>
@@ -231,7 +231,7 @@
 
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-white/10 gap-4">
         <div>
-          <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-oro">Gestión de DB_RSVP</span>
+          <span id="etiqueta-gestion-admin" class="text-[11px] font-semibold uppercase tracking-[0.22em] text-oro">Gestión de DB_RSVP</span>
           <h1 class="font-serif text-3xl sm:text-4xl font-bold text-marfilOscuro tracking-tight mt-0.5">Panel de Anfitrión</h1>
           <p class="text-ceniza text-sm mt-1">Control general de confirmaciones y lista de invitados.</p>
         </div>
@@ -385,23 +385,50 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const modo = urlParams.get('modo') || 'invitado';
+    const eventoId = (urlParams.get('evento') || '').trim();
+    const nombreEventoActual = (urlParams.get('eventoNombre') || urlParams.get('nombre') || 'DB_RSVP').trim() || 'DB_RSVP';
+
+    function aplicarNombreEventoEnVista(nombre) {
+      const limpio = (nombre && String(nombre).trim()) ? String(nombre).trim() : nombreEventoActual;
+      const tituloInv = document.getElementById('titulo-invitado');
+      const etiquetaAdmin = document.getElementById('etiqueta-gestion-admin');
+      if (tituloInv) {
+        tituloInv.textContent = 'Confirmación de Asistencia ' + limpio;
+      }
+      if (etiquetaAdmin) {
+        etiquetaAdmin.textContent = 'Gestión de ' + limpio;
+      }
+    }
+
+    function adjuntarEventoAParams(paramsObj) {
+      const copia = Object.assign({}, paramsObj);
+      if (eventoId && !copia.evento) {
+        copia.evento = eventoId;
+      }
+      return copia;
+    }
 
     async function apiGet(queryParams) {
-      const qs = new URLSearchParams(queryParams).toString();
+      const qs = new URLSearchParams(adjuntarEventoAParams(queryParams)).toString();
       const response = await fetch(`${API_URL}?${qs}`);
       return await response.json();
     }
 
     async function apiPost(bodyObj) {
+      const payload = Object.assign({}, bodyObj);
+      if (eventoId && !payload.evento) {
+        payload.evento = eventoId;
+      }
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(bodyObj)
+        body: JSON.stringify(payload)
       });
       return await response.json();
     }
 
     window.onload = async function() {
+      aplicarNombreEventoEnVista(nombreEventoActual);
       if (modo === 'admin') {
         document.getElementById('vista-admin').classList.remove('hidden');
         await cargarPanelAdmin();
@@ -456,6 +483,7 @@
         try {
           const res = await apiGet({ action: 'buscarInvitado', q: consulta });
           if (res.success) {
+            if (res.nombreEvento) aplicarNombreEventoEnVista(res.nombreEvento);
             renderizarResultadosBusqueda(res.data || []);
           } else {
             estadoEl.textContent = 'No se pudo realizar la búsqueda.';
@@ -527,6 +555,7 @@
         document.getElementById('cargando-grupo').classList.add('hidden');
 
         if (res.success && res.data && res.data.length > 0) {
+          if (res.nombreEvento) aplicarNombreEventoEnVista(res.nombreEvento);
           mostrarMiembrosGrupo(res.data);
         } else {
           document.getElementById('seccion-error').classList.remove('hidden');
@@ -643,6 +672,7 @@
     async function cargarPanelAdmin() {
       const res = await apiGet({ action: 'admin' });
       if (res.success) {
+        if (res.nombreEvento) aplicarNombreEventoEnVista(res.nombreEvento);
         listaGlobalInvitados = (res.data || []).slice().sort(compararGrupoAsc);
         renderizarTablaAdmin(listaGlobalInvitados);
       }
