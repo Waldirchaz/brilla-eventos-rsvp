@@ -72,6 +72,16 @@
         border-radius: 9px !important;
       }
     }
+    @media (max-width: 639px) and (orientation: portrait) {
+      .stat-card-celular {
+        padding-left: 0.35rem !important;
+        padding-right: 0.35rem !important;
+      }
+      .stat-label-linea {
+        font-size: 0.47rem !important;
+        letter-spacing: 0.02em !important;
+      }
+    }
     .btn-iphone-cristal {
       background-color: transparent;
       backdrop-filter: blur(10px);
@@ -869,12 +879,15 @@
         String(item.grupoId || '').trim() !== ''
       );
 
-      const candidatos = principales.length > 0
+      const candidatos = (principales.length > 0
         ? principales
         : listaGlobalInvitados.filter(item =>
             String(item.nombre || '').trim() !== '' &&
             String(item.grupoId || '').trim() !== ''
-          );
+          )
+      ).slice().sort((a, b) =>
+        normalizarTexto(a.nombre).localeCompare(normalizarTexto(b.nombre), 'es')
+      );
 
       if (!candidatos.length) {
         selectExistente.innerHTML = `<option value="">Sin familiares registrados</option>`;
