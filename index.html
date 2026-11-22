@@ -358,8 +358,7 @@
   </footer>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxi44nrfPQZj8ZRxaSJbboas_H4JY7mSwYyIGXHCBryyoHQHg8afHKZ-Ftlwt74U2EUcA/exec";
-    const DEFAULT_EVENT_ID = "1be0uOEfTd35bKeUInro5QO3z9cg6-cLZxF54LvCqarI";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyX6FzutTP6aRh7rJcOCn7HzTmr-MkqYX52nL7EtUI5MHGm81kJfXxAs18cu4uexDXXDg/exec";
 
     function normalizarTexto(texto) {
       if (!texto) return '';
@@ -386,21 +385,18 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const modo = urlParams.get('modo') || 'invitado';
-    const eventoId = urlParams.get('evento') || DEFAULT_EVENT_ID;
 
     async function apiGet(queryParams) {
-      const paramsConEvento = Object.assign({ evento: eventoId }, queryParams);
-      const qs = new URLSearchParams(paramsConEvento).toString();
+      const qs = new URLSearchParams(queryParams).toString();
       const response = await fetch(`${API_URL}?${qs}`);
       return await response.json();
     }
 
     async function apiPost(bodyObj) {
-      const bodyConEvento = Object.assign({ evento: eventoId }, bodyObj);
       const response = await fetch(API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(bodyConEvento)
+        body: JSON.stringify(bodyObj)
       });
       return await response.json();
     }
