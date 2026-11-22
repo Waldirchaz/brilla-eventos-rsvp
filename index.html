@@ -17,11 +17,13 @@
             sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
           },
           colors: {
-            marfil: '#faf8f5',
-            champagne: '#b8925a',
-            champagneOscuro: '#8f6c3b',
-            tinta: '#1f1d1a',
-            piedra: '#6e685f',
+            obsidiana: '#0b0b0d',
+            carbon: '#141418',
+            grafito: '#1c1c22',
+            oro: '#c9a263',
+            oroClaro: '#e2c48d',
+            marfilOscuro: '#f4f1ea',
+            ceniza: '#9c9891',
           }
         }
       }
@@ -29,79 +31,119 @@
   </script>
   <style>
     body {
-      background-color: #faf8f5;
+      background-color: #0b0b0d;
       background-image:
-        radial-gradient(circle at 15% 10%, rgba(184, 146, 90, 0.08) 0%, transparent 45%),
-        radial-gradient(circle at 85% 90%, rgba(184, 146, 90, 0.07) 0%, transparent 45%);
-      color: #1f1d1a;
+        radial-gradient(circle at 50% 0%, rgba(201, 162, 99, 0.14) 0%, transparent 50%),
+        radial-gradient(circle at 85% 95%, rgba(201, 162, 99, 0.08) 0%, transparent 45%);
+      color: #f4f1ea;
     }
-    .tarjeta-elegante {
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(184, 146, 90, 0.22);
-      box-shadow: 0 20px 50px -20px rgba(31, 29, 26, 0.12);
+    .panel-negro {
+      background: rgba(20, 20, 24, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(201, 162, 99, 0.24);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75);
     }
   </style>
 </head>
-<body class="font-sans text-tinta min-h-screen flex flex-col justify-between antialiased">
+<body class="font-sans text-marfilOscuro min-h-screen flex flex-col justify-between antialiased">
 
   <div class="max-w-4xl mx-auto p-4 sm:p-6 w-full my-6 sm:my-10">
 
-    <!-- ENCABEZADO CON LOGO -->
+    <!-- ENCABEZADO -->
     <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center px-5 py-3 mb-3 rounded-2xl bg-white/80 border border-champagne/20 shadow-sm">
-        <img src="https://lh3.googleusercontent.com/d/1YNLnd3IMU3VrFeXlltuwh5kO4J_V4CAV" alt="Brilla Eventos" class="h-20 sm:h-24 mx-auto object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50?text=Brilla+Eventos';">
+      <div class="inline-flex items-center justify-center px-5 py-3 mb-3 rounded-2xl bg-carbon border border-oro/25 shadow-lg">
+        <img src="https://lh3.googleusercontent.com/d/1YNLnd3IMU3VrFeXlltuwh5kO4J_V4CAV" alt="Brilla Eventos" class="h-20 sm:h-24 mx-auto object-contain" onerror="this.onerror=null; this.src='https://via.placeholder.com/150x50/141418/c9a263?text=Brilla+Eventos';">
       </div>
       <div class="flex items-center justify-center gap-3">
-        <span class="h-px w-8 bg-champagne/50"></span>
-        <p class="text-[11px] font-semibold tracking-[0.25em] text-champagneOscuro uppercase">Sistema de Confirmación</p>
-        <span class="h-px w-8 bg-champagne/50"></span>
+        <span class="h-px w-8 bg-oro/45"></span>
+        <p class="text-[11px] font-semibold tracking-[0.26em] text-oro uppercase">Sistema de Confirmación</p>
+        <span class="h-px w-8 bg-oro/45"></span>
       </div>
     </div>
 
-    <!-- VISTA INVITADO -->
-    <div id="vista-invitado" class="hidden tarjeta-elegante rounded-3xl p-6 sm:p-10 max-w-2xl mx-auto">
-      <div class="text-center mb-8 pb-6 border-b border-stone-200/80">
-        <h1 class="font-serif text-3xl sm:text-4xl font-bold text-tinta tracking-tight">Confirmación de Asistencia</h1>
-        <p class="text-piedra text-sm mt-2 max-w-md mx-auto leading-relaxed">
-          Por favor confirma tu asistencia y la de tus acompañantes vinculados.
+    <!-- VISTA INVITADO (BUSCADOR + GRUPO) -->
+    <div id="vista-invitado" class="hidden panel-negro rounded-3xl p-6 sm:p-10 max-w-2xl mx-auto">
+      <div class="text-center mb-8 pb-6 border-b border-white/10">
+        <h1 class="font-serif text-3xl sm:text-4xl font-bold text-marfilOscuro tracking-tight">Confirmación de Asistencia</h1>
+        <p class="text-ceniza text-sm mt-2 max-w-md mx-auto leading-relaxed">
+          Escribe tu nombre y/o apellido para localizar tu invitación y la de tu grupo.
         </p>
       </div>
 
-      <div id="cargando" class="text-center py-12 text-piedra text-sm tracking-wide">
-        Cargando tus datos...
+      <!-- BUSCADOR DE INVITADO -->
+      <div id="seccion-buscador" class="space-y-4">
+        <div>
+          <label for="input-buscar-invitado" class="block text-xs font-semibold uppercase tracking-wider text-oro mb-2">
+            Buscar por nombre o apellido
+          </label>
+          <input
+            type="text"
+            id="input-buscar-invitado"
+            placeholder="EJ. JUAN PEREZ..."
+            oninput="manejarBusquedaInvitado(this)"
+            autocomplete="off"
+            class="w-full px-4 py-3.5 bg-grafito border border-white/15 rounded-2xl text-marfilOscuro placeholder:text-ceniza/60 focus:outline-none focus:border-oro uppercase font-medium tracking-wide text-sm"
+          >
+          <span class="text-[11px] text-ceniza mt-1.5 block">
+            Se busca automáticamente en mayúsculas y sin acentos.
+          </span>
+        </div>
+
+        <div id="estado-busqueda" class="hidden text-xs text-ceniza py-2"></div>
+
+        <!-- LISTA DESPLEGABLE DE COINCIDENCIAS -->
+        <div id="resultados-busqueda" class="hidden space-y-2 pt-1"></div>
       </div>
 
+      <!-- CARGANDO GRUPO -->
+      <div id="cargando-grupo" class="hidden text-center py-12 text-ceniza text-sm tracking-wide">
+        Cargando tu grupo...
+      </div>
+
+      <!-- SECCIÓN DE CONFIRMACIÓN DEL GRUPO -->
       <div id="seccion-invitados" class="hidden space-y-7">
-        <div id="lista-miembros" class="divide-y divide-stone-200/70"></div>
+        <div class="flex items-center justify-between bg-grafito/90 border border-white/10 rounded-2xl px-4 py-3">
+          <div>
+            <span class="text-[10px] uppercase tracking-widest text-oro block">Grupo Seleccionado</span>
+            <span id="etiqueta-grupo-actual" class="font-mono text-sm font-semibold text-marfilOscuro">-</span>
+          </div>
+          <button type="button" onclick="volverABuscar()" class="text-xs font-semibold text-oroClaro hover:text-white underline underline-offset-4 transition">
+            Cambiar persona
+          </button>
+        </div>
+
+        <div id="lista-miembros" class="divide-y divide-white/10"></div>
         <div id="mensaje-alerta" class="hidden p-4 rounded-2xl text-sm font-medium"></div>
 
-        <button onclick="enviarRSVP()" id="btn-enviar" class="w-full bg-tinta hover:bg-stone-800 text-marfil font-semibold py-3.5 px-6 rounded-2xl transition duration-200 shadow-lg shadow-stone-900/10 tracking-wide">
-          Guardar Confirmación
+        <button onclick="enviarRSVP()" id="btn-enviar" class="w-full bg-oro hover:bg-oroClaro text-obsidiana font-bold py-3.5 px-6 rounded-2xl transition duration-200 shadow-lg shadow-black/40 tracking-wide">
+          GUARDAR CONFIRMACIÓN
         </button>
       </div>
 
       <div id="seccion-error" class="hidden text-center py-8">
-        <div class="bg-rose-50/90 border border-rose-200/80 text-rose-800 p-5 rounded-2xl mb-4 text-sm font-medium">
-          No se encontró un grupo válido o el enlace está incompleto.
+        <div class="bg-rose-950/60 border border-rose-500/30 text-rose-200 p-5 rounded-2xl mb-4 text-sm font-medium">
+          No se encontró información para el grupo seleccionado.
         </div>
+        <button type="button" onclick="volverABuscar()" class="px-5 py-2.5 bg-grafito hover:bg-white/10 border border-white/15 rounded-xl text-xs font-semibold text-marfilOscuro transition">
+          Intentar otra búsqueda
+        </button>
       </div>
     </div>
 
     <!-- VISTA ANFITRIÓN (ADMIN) -->
-    <div id="vista-admin" class="hidden tarjeta-elegante rounded-3xl p-6 sm:p-10">
+    <div id="vista-admin" class="hidden panel-negro rounded-3xl p-6 sm:p-10">
 
-      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-stone-200/80 gap-4">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-6 border-b border-white/10 gap-4">
         <div>
-          <span class="text-[11px] font-semibold uppercase tracking-[0.2em] text-champagneOscuro">Gestión del Evento</span>
-          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-tinta tracking-tight mt-0.5">Panel de Anfitrión</h1>
-          <p class="text-piedra text-sm mt-1">Control general de confirmaciones y lista de invitados.</p>
+          <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-oro">Gestión del Evento</span>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-marfilOscuro tracking-tight mt-0.5">Panel de Anfitrión</h1>
+          <p class="text-ceniza text-sm mt-1">Control general de confirmaciones y lista de invitados.</p>
         </div>
         <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-start sm:justify-end">
-          <button onclick="exportarCSV()" class="bg-marfil hover:bg-stone-100 text-tinta text-sm font-semibold py-2.5 px-4 rounded-xl transition flex items-center gap-1.5 border border-champagne/30">
-            📥 Exportar CSV con Enlaces
+          <button onclick="exportarCSV()" class="bg-grafito hover:bg-white/10 text-marfilOscuro text-sm font-semibold py-2.5 px-4 rounded-xl transition flex items-center gap-1.5 border border-oro/30">
+            📥 Exportar CSV
           </button>
-          <button onclick="abrirModal()" class="bg-tinta hover:bg-stone-800 text-marfil text-sm font-semibold py-2.5 px-4 rounded-xl transition shadow-md shadow-stone-900/10">
+          <button onclick="abrirModal()" class="bg-oro hover:bg-oroClaro text-obsidiana text-sm font-bold py-2.5 px-4 rounded-xl transition shadow-md shadow-black/40">
             + Nuevo Grupo
           </button>
         </div>
@@ -109,38 +151,38 @@
 
       <!-- Estadísticas rápidas -->
       <div class="grid grid-cols-3 gap-3 sm:gap-5 mb-8">
-        <div class="bg-marfil/90 p-4 sm:p-5 rounded-2xl border border-stone-200/80 text-center">
-          <span class="block text-[11px] font-semibold text-piedra uppercase tracking-wider">Total Invitados</span>
-          <span id="stat-total" class="font-serif text-2xl sm:text-3xl font-bold text-tinta mt-1 block">-</span>
+        <div class="bg-grafito/90 p-4 sm:p-5 rounded-2xl border border-white/10 text-center">
+          <span class="block text-[11px] font-semibold text-ceniza uppercase tracking-wider">Total Invitados</span>
+          <span id="stat-total" class="font-serif text-2xl sm:text-3xl font-bold text-marfilOscuro mt-1 block">-</span>
         </div>
-        <div class="bg-emerald-50/70 p-4 sm:p-5 rounded-2xl border border-emerald-200/70 text-center">
-          <span class="block text-[11px] font-semibold text-emerald-700 uppercase tracking-wider">Confirmados</span>
-          <span id="stat-confirmados" class="font-serif text-2xl sm:text-3xl font-bold text-emerald-800 mt-1 block">-</span>
+        <div class="bg-emerald-950/50 p-4 sm:p-5 rounded-2xl border border-emerald-500/25 text-center">
+          <span class="block text-[11px] font-semibold text-emerald-300 uppercase tracking-wider">Confirmados</span>
+          <span id="stat-confirmados" class="font-serif text-2xl sm:text-3xl font-bold text-emerald-200 mt-1 block">-</span>
         </div>
-        <div class="bg-amber-50/70 p-4 sm:p-5 rounded-2xl border border-amber-200/70 text-center">
-          <span class="block text-[11px] font-semibold text-amber-700 uppercase tracking-wider">Pendientes</span>
-          <span id="stat-pendientes" class="font-serif text-2xl sm:text-3xl font-bold text-amber-800 mt-1 block">-</span>
+        <div class="bg-amber-950/50 p-4 sm:p-5 rounded-2xl border border-amber-500/25 text-center">
+          <span class="block text-[11px] font-semibold text-amber-300 uppercase tracking-wider">Pendientes</span>
+          <span id="stat-pendientes" class="font-serif text-2xl sm:text-3xl font-bold text-amber-200 mt-1 block">-</span>
         </div>
       </div>
 
       <!-- BARRA DE BÚSQUEDA Y FILTROS -->
       <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-5">
         <div class="w-full sm:w-80">
-          <input type="text" id="input-buscar" placeholder="🔍 Buscar por nombre o grupo..." oninput="filtrarTabla()" class="w-full px-4 py-2.5 border border-stone-200 rounded-xl text-sm focus:outline-none focus:border-champagne bg-white text-tinta placeholder:text-stone-400">
+          <input type="text" id="input-buscar" placeholder="🔍 BUSCAR POR NOMBRE O GRUPO..." oninput="filtrarTabla()" class="w-full px-4 py-2.5 border border-white/15 rounded-xl text-sm focus:outline-none focus:border-oro bg-grafito text-marfilOscuro placeholder:text-ceniza/60 uppercase">
         </div>
         <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-          <button onclick="filtrarEstado('Todos', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-tinta text-marfil transition">Todos</button>
-          <button onclick="filtrarEstado('Confirmado', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-piedra hover:bg-stone-200 transition">Confirmados</button>
-          <button onclick="filtrarEstado('Pendiente', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-piedra hover:bg-stone-200 transition">Pendientes</button>
-          <button onclick="filtrarEstado('Rechazado', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-piedra hover:bg-stone-200 transition">Rechazados</button>
+          <button onclick="filtrarEstado('Todos', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-oro text-obsidiana transition">Todos</button>
+          <button onclick="filtrarEstado('Confirmado', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-grafito text-ceniza hover:text-marfilOscuro border border-white/10 transition">Confirmados</button>
+          <button onclick="filtrarEstado('Pendiente', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-grafito text-ceniza hover:text-marfilOscuro border border-white/10 transition">Pendientes</button>
+          <button onclick="filtrarEstado('Rechazado', this)" class="filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-grafito text-ceniza hover:text-marfilOscuro border border-white/10 transition">Rechazados</button>
         </div>
       </div>
 
       <!-- Tabla -->
-      <div class="overflow-x-auto rounded-2xl border border-stone-200/80 bg-white">
+      <div class="overflow-x-auto rounded-2xl border border-white/10 bg-grafito/60">
         <table class="w-full text-left border-collapse text-sm">
           <thead>
-            <tr class="bg-marfil text-piedra uppercase text-[11px] tracking-wider border-b border-stone-200/80">
+            <tr class="bg-black/40 text-oro uppercase text-[11px] tracking-wider border-b border-white/10">
               <th class="p-3.5 font-semibold">Nombre</th>
               <th class="p-3.5 font-semibold">Grupo</th>
               <th class="p-3.5 font-semibold">Tipo</th>
@@ -148,32 +190,32 @@
               <th class="p-3.5 font-semibold text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody id="tabla-admin" class="divide-y divide-stone-100"></tbody>
+          <tbody id="tabla-admin" class="divide-y divide-white/10"></tbody>
         </table>
       </div>
     </div>
 
     <!-- Modal -->
-    <div id="modal-agregar" class="fixed inset-0 bg-stone-950/45 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-      <div class="bg-white rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl border border-champagne/20 max-h-[90vh] overflow-y-auto">
-        <span class="text-[10px] font-semibold uppercase tracking-[0.2em] text-champagneOscuro">Registro</span>
-        <h3 class="font-serif text-2xl font-bold text-tinta mb-5">Agregar Grupo de Invitados</h3>
+    <div id="modal-agregar" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+      <div class="bg-carbon rounded-3xl p-6 sm:p-7 max-w-lg w-full shadow-2xl border border-oro/30 max-h-[90vh] overflow-y-auto">
+        <span class="text-[10px] font-semibold uppercase tracking-[0.22em] text-oro">Registro</span>
+        <h3 class="font-serif text-2xl font-bold text-marfilOscuro mb-5">Agregar Grupo de Invitados</h3>
         <form id="form-nuevo" onsubmit="guardarNuevoInvitado(event)" class="space-y-4">
           <div>
-            <label class="block text-xs font-semibold text-piedra uppercase tracking-wider mb-1.5">Grupo ID (Automático)</label>
-            <input type="text" id="nuevo-grupo" readonly data-cargando="true" class="w-full px-3.5 py-2.5 bg-marfil border border-stone-200 rounded-xl text-piedra font-mono text-sm cursor-not-allowed">
-            <span class="text-[11px] text-stone-400 mt-1 block">Generado en orden consecutivo automáticamente.</span>
+            <label class="block text-xs font-semibold text-ceniza uppercase tracking-wider mb-1.5">Grupo ID (Automático)</label>
+            <input type="text" id="nuevo-grupo" readonly data-cargando="true" class="w-full px-3.5 py-2.5 bg-grafito border border-white/10 rounded-xl text-ceniza font-mono text-sm cursor-not-allowed">
+            <span class="text-[11px] text-ceniza/70 mt-1 block">Generado en orden consecutivo automáticamente.</span>
           </div>
 
           <div id="contenedor-invitados-dinamico" class="space-y-3"></div>
 
-          <button type="button" onclick="agregarCampoInvitado()" class="text-xs text-champagneOscuro font-semibold hover:text-tinta flex items-center gap-1 pt-1 transition">
+          <button type="button" onclick="agregarCampoInvitado()" class="text-xs text-oro hover:text-oroClaro font-semibold flex items-center gap-1 pt-1 transition">
             + Agregar otro familiar / acompañante vinculado
           </button>
 
-          <div class="flex justify-end gap-2.5 pt-5 border-t border-stone-200/80">
-            <button type="button" onclick="cerrarModal()" class="px-4 py-2.5 text-piedra hover:bg-stone-100 rounded-xl font-medium text-sm transition">Cancelar</button>
-            <button type="submit" id="btn-guardar-grupo" class="px-5 py-2.5 bg-tinta hover:bg-stone-800 text-marfil rounded-xl font-semibold text-sm shadow transition">Guardar Todo</button>
+          <div class="flex justify-end gap-2.5 pt-5 border-t border-white/10">
+            <button type="button" onclick="cerrarModal()" class="px-4 py-2.5 text-ceniza hover:bg-white/10 rounded-xl font-medium text-sm transition">Cancelar</button>
+            <button type="submit" id="btn-guardar-grupo" class="px-5 py-2.5 bg-oro hover:bg-oroClaro text-obsidiana rounded-xl font-bold text-sm shadow transition">Guardar Todo</button>
           </div>
         </form>
       </div>
@@ -181,16 +223,24 @@
 
   </div>
 
-  <footer class="text-center py-5 text-xs tracking-wide text-piedra">
+  <footer class="text-center py-5 text-xs tracking-wide text-ceniza">
     Brilla Eventos · Sistema de RSVP Automatizado
   </footer>
 
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbyX6FzutTP6aRh7rJcOCn7HzTmr-MkqYX52nL7EtUI5MHGm81kJfXxAs18cu4uexDXXDg/exec";
 
+    function normalizarTexto(texto) {
+      if (!texto) return '';
+      return String(texto)
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .replace(/\s+/g, ' ');
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const modo = urlParams.get('modo') || 'invitado';
-    const grupoId = urlParams.get('grupo') || '';
 
     async function apiGet(queryParams) {
       const qs = new URLSearchParams(queryParams).toString();
@@ -213,31 +263,122 @@
         await cargarPanelAdmin();
       } else {
         document.getElementById('vista-invitado').classList.remove('hidden');
-        if (!grupoId) {
-          document.getElementById('cargando').classList.add('hidden');
-          document.getElementById('seccion-error').classList.remove('hidden');
-          return;
-        }
-        const res = await apiGet({ action: 'grupo', grupo: grupoId });
-        if (res.success) {
-          mostrarMiembrosGrupo(res.data);
-        } else {
-          document.getElementById('cargando').classList.add('hidden');
-          document.getElementById('seccion-error').classList.remove('hidden');
-        }
+        document.getElementById('seccion-buscador').classList.remove('hidden');
       }
     };
+
+    let temporizadorBusqueda = null;
+
+    function manejarBusquedaInvitado(inputEl) {
+      const normalizado = normalizarTexto(inputEl.value);
+      if (inputEl.value !== normalizado) {
+        const pos = inputEl.selectionStart;
+        inputEl.value = normalizado;
+        if (pos !== null) inputEl.setSelectionRange(pos, pos);
+      }
+
+      clearTimeout(temporizadorBusqueda);
+      const consulta = normalizado.trim();
+      const estadoEl = document.getElementById('estado-busqueda');
+      const resultadosEl = document.getElementById('resultados-busqueda');
+
+      if (consulta.length < 2) {
+        estadoEl.classList.add('hidden');
+        resultadosEl.classList.add('hidden');
+        resultadosEl.innerHTML = '';
+        return;
+      }
+
+      estadoEl.classList.remove('hidden');
+      estadoEl.textContent = 'Buscando coincidencias...';
+
+      temporizadorBusqueda = setTimeout(async () => {
+        try {
+          const res = await apiGet({ action: 'buscarInvitado', q: consulta });
+          if (res.success) {
+            renderizarResultadosBusqueda(res.data || []);
+          } else {
+            estadoEl.textContent = 'No se pudo realizar la búsqueda.';
+          }
+        } catch (err) {
+          estadoEl.textContent = 'Error al consultar la lista.';
+        }
+      }, 250);
+    }
+
+    function renderizarResultadosBusqueda(coincidencias) {
+      const estadoEl = document.getElementById('estado-busqueda');
+      const resultadosEl = document.getElementById('resultados-busqueda');
+      resultadosEl.innerHTML = '';
+
+      if (!coincidencias.length) {
+        estadoEl.textContent = 'No se encontraron invitados con ese nombre o apellido.';
+        resultadosEl.classList.add('hidden');
+        return;
+      }
+
+      estadoEl.textContent = 'Selecciona tu nombre para ver tu invitación y grupo:';
+      resultadosEl.classList.remove('hidden');
+
+      coincidencias.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'w-full text-left px-4 py-3.5 rounded-2xl bg-grafito hover:bg-white/10 border border-white/15 hover:border-oro/50 transition flex items-center justify-between gap-3';
+        btn.onclick = () => seleccionarInvitadoYGrupo(item.grupoId);
+
+        btn.innerHTML = `
+          <div>
+            <div class="font-semibold text-sm text-marfilOscuro tracking-wide">${normalizarTexto(item.nombre)}</div>
+            <div class="text-[11px] text-ceniza mt-0.5">${item.tipo === 'Principal' ? 'INVITADO PRINCIPAL' : 'ACOMPAÑANTE'} · GRUPO ${item.grupoId}</div>
+          </div>
+          <span class="text-xs font-bold text-oro">Seleccionar →</span>
+        `;
+        resultadosEl.appendChild(btn);
+      });
+    }
+
+    async function seleccionarInvitadoYGrupo(grupoSeleccionado) {
+      document.getElementById('seccion-buscador').classList.add('hidden');
+      document.getElementById('seccion-error').classList.add('hidden');
+      document.getElementById('seccion-invitados').classList.add('hidden');
+      document.getElementById('cargando-grupo').classList.remove('hidden');
+
+      try {
+        const res = await apiGet({ action: 'grupo', grupo: grupoSeleccionado });
+        document.getElementById('cargando-grupo').classList.add('hidden');
+
+        if (res.success && res.data && res.data.length > 0) {
+          document.getElementById('etiqueta-grupo-actual').textContent = grupoSeleccionado;
+          mostrarMiembrosGrupo(res.data);
+        } else {
+          document.getElementById('seccion-error').classList.remove('hidden');
+        }
+      } catch (err) {
+        document.getElementById('cargando-grupo').classList.add('hidden');
+        document.getElementById('seccion-error').classList.remove('hidden');
+      }
+    }
+
+    function volverABuscar() {
+      document.getElementById('seccion-invitados').classList.add('hidden');
+      document.getElementById('seccion-error').classList.add('hidden');
+      document.getElementById('mensaje-alerta').classList.add('hidden');
+      document.getElementById('seccion-buscador').classList.remove('hidden');
+      const input = document.getElementById('input-buscar-invitado');
+      input.value = '';
+      input.focus();
+      document.getElementById('resultados-busqueda').classList.add('hidden');
+      document.getElementById('estado-busqueda').classList.add('hidden');
+    }
 
     let datosMiembros = [];
 
     function mostrarMiembrosGrupo(miembros) {
-      document.getElementById('cargando').classList.add('hidden');
-      if (!miembros || miembros.length === 0) {
-        document.getElementById('seccion-error').classList.remove('hidden');
-        return;
-      }
       datosMiembros = miembros;
       document.getElementById('seccion-invitados').classList.remove('hidden');
+      const btn = document.getElementById('btn-enviar');
+      btn.disabled = false;
+      btn.innerText = "GUARDAR CONFIRMACIÓN";
 
       let contenedor = document.getElementById('lista-miembros');
       contenedor.innerHTML = '';
@@ -247,12 +388,12 @@
         div.className = "py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4";
         div.innerHTML = `
           <div>
-            <h3 class="font-semibold text-base text-tinta">${m.nombre}</h3>
-            <span class="text-xs text-piedra">${m.tipo === 'Principal' ? 'Invitado Principal' : 'Acompañante'}</span>
+            <h3 class="font-semibold text-base text-marfilOscuro tracking-wide">${normalizarTexto(m.nombre)}</h3>
+            <span class="text-xs text-ceniza">${m.tipo === 'Principal' ? 'Invitado Principal' : 'Acompañante'}</span>
           </div>
           <div class="flex gap-2.5">
-            <button type="button" onclick="cambiarEstado(${index}, 'Confirmado')" class="px-4 py-2.5 text-xs font-semibold rounded-xl border transition ${m.estado === 'Confirmado' ? 'bg-emerald-700 text-white border-emerald-700 shadow-sm' : 'bg-marfil text-piedra border-stone-200 hover:bg-stone-100'}">Asistirá</button>
-            <button type="button" onclick="cambiarEstado(${index}, 'Rechazado')" class="px-4 py-2.5 text-xs font-semibold rounded-xl border transition ${m.estado === 'Rechazado' ? 'bg-rose-700 text-white border-rose-700 shadow-sm' : 'bg-marfil text-piedra border-stone-200 hover:bg-stone-100'}">No asistirá</button>
+            <button type="button" onclick="cambiarEstado(${index}, 'Confirmado')" class="px-4 py-2.5 text-xs font-bold rounded-xl border transition ${m.estado === 'Confirmado' ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm' : 'bg-grafito text-ceniza border-white/15 hover:text-marfilOscuro'}">Asistirá</button>
+            <button type="button" onclick="cambiarEstado(${index}, 'Rechazado')" class="px-4 py-2.5 text-xs font-bold rounded-xl border transition ${m.estado === 'Rechazado' ? 'bg-rose-600 text-white border-rose-500 shadow-sm' : 'bg-grafito text-ceniza border-white/15 hover:text-marfilOscuro'}">No asistirá</button>
           </div>
         `;
         contenedor.appendChild(div);
@@ -267,23 +408,23 @@
     async function enviarRSVP() {
       let btn = document.getElementById('btn-enviar');
       btn.disabled = true;
-      btn.innerText = "Guardando...";
+      btn.innerText = "GUARDANDO...";
 
       try {
         const res = await apiPost({ action: 'guardarRSVP', respuestas: datosMiembros });
         let alerta = document.getElementById('mensaje-alerta');
         if (res.success) {
-          alerta.className = "p-4 rounded-2xl text-sm font-medium bg-emerald-50 border border-emerald-200/80 text-emerald-800";
+          alerta.className = "p-4 rounded-2xl text-sm font-medium bg-emerald-950/70 border border-emerald-500/30 text-emerald-200";
           alerta.innerText = res.message;
           alerta.classList.remove('hidden');
-          btn.innerText = "¡Guardado con éxito!";
+          btn.innerText = "¡GUARDADO CON ÉXITO!";
         } else {
           throw new Error(res.message);
         }
       } catch (err) {
         alert("Hubo un error al guardar.");
         btn.disabled = false;
-        btn.innerText = "Guardar Confirmación";
+        btn.innerText = "GUARDAR CONFIRMACIÓN";
       }
     }
 
@@ -311,27 +452,27 @@
       document.getElementById('stat-pendientes').innerText = pendientes;
 
       if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-piedra">No se encontraron invitados.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-ceniza">No se encontraron invitados.</td></tr>`;
         return;
       }
 
       lista.forEach(i => {
         let tr = document.createElement('tr');
-        tr.className = "hover:bg-marfil/60 transition";
+        tr.className = "hover:bg-white/5 transition";
         let estadoStr = i.estado || 'Pendiente';
         let badgeColor = estadoStr === 'Confirmado'
-          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/70'
+          ? 'bg-emerald-950/70 text-emerald-200 border border-emerald-500/30'
           : (estadoStr === 'Rechazado'
-            ? 'bg-rose-50 text-rose-800 border border-rose-200/70'
-            : 'bg-amber-50 text-amber-800 border border-amber-200/70');
+            ? 'bg-rose-950/70 text-rose-200 border border-rose-500/30'
+            : 'bg-amber-950/70 text-amber-200 border border-amber-500/30');
 
         tr.innerHTML = `
-          <td class="p-3.5 font-medium text-tinta">${i.nombre}</td>
-          <td class="p-3.5 text-piedra font-mono text-xs">${i.grupoId}</td>
-          <td class="p-3.5 text-piedra">${i.tipo}</td>
+          <td class="p-3.5 font-medium text-marfilOscuro">${normalizarTexto(i.nombre)}</td>
+          <td class="p-3.5 text-ceniza font-mono text-xs">${i.grupoId}</td>
+          <td class="p-3.5 text-ceniza">${i.tipo}</td>
           <td class="p-3.5"><span class="px-3 py-1 rounded-full text-xs font-semibold ${badgeColor}">${estadoStr}</span></td>
           <td class="p-3.5 text-right">
-            <button onclick="eliminarFila('${i.id}', ${i.row})" class="text-rose-600 hover:text-rose-800 text-xs font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-50 transition" title="Eliminar invitado">🗑️ Eliminar</button>
+            <button onclick="eliminarFila('${i.id}', ${i.row})" class="text-rose-300 hover:text-rose-200 text-xs font-semibold px-2.5 py-1 rounded-lg hover:bg-rose-950/50 transition" title="Eliminar invitado">🗑️ Eliminar</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -339,10 +480,14 @@
     }
 
     function filtrarTabla() {
-      let query = document.getElementById('input-buscar').value.toLowerCase();
+      const inputBuscar = document.getElementById('input-buscar');
+      inputBuscar.value = normalizarTexto(inputBuscar.value);
+      let query = inputBuscar.value.trim();
 
       let filtrados = listaGlobalInvitados.filter(i => {
-        let coincideTexto = String(i.nombre).toLowerCase().includes(query) || String(i.grupoId).toLowerCase().includes(query);
+        let nombreNorm = normalizarTexto(i.nombre);
+        let grupoNorm = normalizarTexto(i.grupoId);
+        let coincideTexto = nombreNorm.includes(query) || grupoNorm.includes(query);
         let coincideEstado = (estadoFiltroActual === 'Todos') || ((i.estado || 'Pendiente') === estadoFiltroActual);
         return coincideTexto && coincideEstado;
       });
@@ -353,9 +498,9 @@
     function filtrarEstado(estado, btnElement) {
       estadoFiltroActual = estado;
       document.querySelectorAll('.filtro-btn').forEach(btn => {
-        btn.className = "filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-stone-100 text-piedra hover:bg-stone-200 transition";
+        btn.className = "filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-grafito text-ceniza hover:text-marfilOscuro border border-white/10 transition";
       });
-      btnElement.className = "filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-tinta text-marfil transition";
+      btnElement.className = "filtro-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-oro text-obsidiana transition";
       filtrarTabla();
     }
 
@@ -366,11 +511,10 @@
       }
 
       const baseUrl = window.location.origin + window.location.pathname;
-      let csvContent = "data:text/csv;charset=utf-8,ID,Nombre,Grupo ID,Tipo,Estado,Enlace de Confirmación\r\n";
+      let csvContent = "data:text/csv;charset=utf-8,ID,Nombre,Grupo ID,Tipo,Estado,Enlace General de Confirmacion\r\n";
 
       listaGlobalInvitados.forEach(i => {
-        let urlPersonalizada = `${baseUrl}?grupo=${encodeURIComponent(i.grupoId)}`;
-        let fila = [i.id, `"${i.nombre}"`, i.grupoId, i.tipo, i.estado || 'Pendiente', `"${urlPersonalizada}"`].join(",");
+        let fila = [i.id, `"${normalizarTexto(i.nombre)}"`, i.grupoId, i.tipo, i.estado || 'Pendiente', `"${baseUrl}"`].join(",");
         csvContent += fila + "\r\n";
       });
 
@@ -443,17 +587,17 @@
 
       listaNuevosInvitados.forEach((inv, index) => {
         let div = document.createElement('div');
-        div.className = "p-3.5 bg-marfil/80 rounded-2xl border border-stone-200/80 space-y-2";
+        div.className = "p-3.5 bg-grafito/90 rounded-2xl border border-white/10 space-y-2";
 
-        let headerHTML = '<div class="flex justify-between items-center"><span class="text-[11px] font-bold uppercase tracking-wider text-piedra">' +
+        let headerHTML = '<div class="flex justify-between items-center"><span class="text-[11px] font-bold uppercase tracking-wider text-oro">' +
                          (index === 0 ? 'Invitado Principal' : 'Acompañante Vinculado') + '</span>';
 
         if (index > 0) {
-          headerHTML += '<button type="button" onclick="eliminarCampoInvitado(' + index + ')" class="text-rose-600 hover:text-rose-800 text-xs font-semibold">Eliminar</button>';
+          headerHTML += '<button type="button" onclick="eliminarCampoInvitado(' + index + ')" class="text-rose-400 hover:text-rose-300 text-xs font-semibold">Eliminar</button>';
         }
         headerHTML += '</div>';
 
-        let inputHTML = '<div><input type="text" placeholder="Nombre completo" value="' + inv.nombre + '" oninput="listaNuevosInvitados[' + index + '].nombre = this.value" required class="w-full px-3.5 py-2 bg-white border border-stone-200 rounded-xl focus:outline-none focus:border-champagne text-sm text-tinta"></div>';
+        let inputHTML = '<div><input type="text" placeholder="NOMBRE COMPLETO SIN ACENTOS" value="' + inv.nombre + '" oninput="this.value = normalizarTexto(this.value); listaNuevosInvitados[' + index + '].nombre = this.value.trim()" required class="w-full px-3.5 py-2.5 bg-carbon border border-white/15 rounded-xl focus:outline-none focus:border-oro text-sm text-marfilOscuro uppercase"></div>';
 
         div.innerHTML = headerHTML + inputHTML;
         contenedor.appendChild(div);
@@ -470,7 +614,8 @@
       }
 
       for (let inv of listaNuevosInvitados) {
-        if (!inv.nombre.trim()) {
+        inv.nombre = normalizarTexto(inv.nombre).trim();
+        if (!inv.nombre) {
           alert("Por favor completa los nombres de todos los invitados.");
           return;
         }
@@ -478,7 +623,7 @@
 
       let btnGuardar = document.getElementById('btn-guardar-grupo');
       btnGuardar.disabled = true;
-      btnGuardar.innerText = "Guardando...";
+      btnGuardar.innerText = "GUARDANDO...";
 
       let datos = {
         grupoId: inputGrupo.value,
