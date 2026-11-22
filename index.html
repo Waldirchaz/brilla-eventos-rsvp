@@ -621,10 +621,29 @@
     let listaGlobalInvitados = [];
     let estadoFiltroActual = 'Todos';
 
+    function compararGrupoAsc(a, b) {
+      const gA = String(a.grupoId || '').trim();
+      const gB = String(b.grupoId || '').trim();
+      const numA = parseInt(gA.replace(/^GRP-/i, ''), 10);
+      const numB = parseInt(gB.replace(/^GRP-/i, ''), 10);
+
+      if (!isNaN(numA) && !isNaN(numB) && numA !== numB) {
+        return numA - numB;
+      }
+      const cmpGrupo = gA.localeCompare(gB, 'es', { numeric: true });
+      if (cmpGrupo !== 0) return cmpGrupo;
+
+      const esPrincipalA = String(a.tipo || '').trim().toLowerCase() === 'principal' ? 0 : 1;
+      const esPrincipalB = String(b.tipo || '').trim().toLowerCase() === 'principal' ? 0 : 1;
+      if (esPrincipalA !== esPrincipalB) return esPrincipalA - esPrincipalB;
+
+      return normalizarTexto(a.nombre).localeCompare(normalizarTexto(b.nombre), 'es');
+    }
+
     async function cargarPanelAdmin() {
       const res = await apiGet({ action: 'admin' });
       if (res.success) {
-        listaGlobalInvitados = res.data || [];
+        listaGlobalInvitados = (res.data || []).slice().sort(compararGrupoAsc);
         renderizarTablaAdmin(listaGlobalInvitados);
       }
     }
@@ -680,7 +699,9 @@
       document.getElementById('stat-confirmados').innerText = confirmados;
       document.getElementById('stat-pendientes').innerText = pendientes;
 
-      if (lista.length === 0) {
+      const listaOrdenada = (lista || []).slice().sort(compararGrupoAsc);
+
+      if (listaOrdenada.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-ceniza">No se encontraron invitados.</td></tr>`;
         return;
       }
@@ -688,7 +709,7 @@
       const gruposDisponibles = obtenerGruposDisponibles();
       const estadosDisponibles = ['Pendiente', 'Confirmado', 'Rechazado'];
 
-      lista.forEach((i, idx) => {
+      listaOrdenada.forEach((i, idx) => {
         let tr = document.createElement('tr');
         tr.className = "hover:bg-white/5 transition";
         let estadoActual = i.estado || 'Pendiente';
@@ -1018,6 +1039,26 @@
       for (let inv of invitadosAEnviar) {
         if (!inv.nombre) {
           alert("Por favor completa los nombres de todos los invitados.");
+          return;
+        }
+      }
+
+      const nombresExistentes = new Set(
+        listaGlobalInvitados
+          .map(item => normalizarTexto(item.nombre).trim())
+          .filter(Boolean)
+      );
+      const nombresEnFormulario = new Set();
+
+      for (let inv of invitadosAEnviar) {
+        if (nombresEnFormulario.has(inv.nombre)) {
+          alert(`El nombre "${inv.nombre}" está repetido en el formulario. No se permiten nombres duplicados.`);
+          return;
+        }
+        nombresEnFormulario.add(inv.nombre);
+
+        if (nombresExistentes.has(inv.nombre)) {
+          alert(`El invitado "${inv.nombre}" ya está registrado en la lista. No se puede agregar un nombre repetido.`);
           return;
         }
       }
